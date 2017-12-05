@@ -1,0 +1,33 @@
+{
+  "name": "upsense-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack --env production",
+    "test": "standard --verbose && npm run build && echo 'SUCCESS!'"
+  },
+  "author": "Jacob Grahn",
+  "license": "MIT",
+  "dependencies": {
+    "jiber-client": "^0.1.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^7.1.2",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-plugin-transform-react-jsx": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2017": "^6.24.1",
+    "css-loader": "^0.28.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "hyperapp": "^0.16.2",
+    "imports": "^1.0.0",
+    "node-libs-browser": "^2.1.0",
+    "standard": "^10.0.3",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.5"
+  }
+}

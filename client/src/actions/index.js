@@ -16,7 +16,10 @@ export default {
     store.dispatch({type: COMMENT, postId, text})
     return Object.assign({}, state, {posts: store.getState()})
   },
-  updatePosts: (posts) => (state) => console.log({state, posts}) || Object.assign({}, state, {posts}),
+  updateData: (posts) => (state) => {
+    const roomState = state.rooms['test'] // todo: set roomName variable somewhere
+    Object.assign({}, roomState, {me: state.me}, {posts})
+  },
   sort: (event) => (state) => Object.assign({}, state, {sort: event.target.value}),
   goto: (path) => (state) => Object.assign({}, state, {path})
 }

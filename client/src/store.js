@@ -1,4 +1,6 @@
 import * as jiber from 'jiber-client'
 import reducer from '../../shared/reducer'
-const room = jiber.createStore({url: 'ws:\\localhost', reducer}).createRoom('test')
-export { room as default }
+
+const store = jiber.createStore({url: 'ws:\\localhost', reducer})
+const room = store.createRoom('test')
+export { store, room }

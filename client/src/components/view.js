@@ -2,6 +2,7 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import PostCreate from './post-create'
 import PostList from './post-list'
 import PostInspect from './post-inspect'
+import PostUpdate from './post-update'
 import Controls from './controls'
 import Login from './login'
 
@@ -27,6 +28,16 @@ export default (state) => (actions) => {
         <div class='container'>
           <h1>UpSense</h1>
           <PostInspect post={state.posts[postId]} {...actions} />
+        </div>
+      )
+    }
+  } else if (state.path.indexOf('/edit/') === 0) {
+    const postId = state.path.substr(6)
+    if (state.posts && state.posts[postId]) {
+      return (
+        <div class='container'>
+          <h1>UpSense</h1>
+          <PostUpdate post={state.posts[postId]} {...actions} />
         </div>
       )
     }

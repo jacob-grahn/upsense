@@ -5,8 +5,8 @@ export default ({ post, goto, vote, addComment, editPost }) => {
   const output = (
     <div class='post-inspect'>
       <button class='btn btn-text' onclick={() => goto('/')}>Back to All Posts</button>
-      <button class='btn btn-text' onclick={() => goto('/')}>Edit</button>
-      <button class='btn btn-text' onclick={() => goto('/')}>Delete</button>
+      &nbsp;<button class='btn btn-text' onclick={() => goto(`/edit/${post.postId}`)}>Edit</button>
+      &nbsp;<button class='btn btn-text' onclick={() => goto('/')}>Delete</button>
       <div class='top'>
         <div class='vote' onclick={() => vote(post.postId)}>
           <div class='arrow-up' />

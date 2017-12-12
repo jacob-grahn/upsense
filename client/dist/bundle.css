@@ -132,6 +132,16 @@ ul li {
   display: flex;
 }
 
+.status {
+  font-weight: normal;
+  color: #555;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 5px;
+  margin-left: 16px;
+}
+
 .vote {
   border: 1px solid #ddd;
   border-radius: 5px;

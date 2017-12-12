@@ -2,6 +2,7 @@ const votes = require('./votes')
 const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = require('./constants')
 
 module.exports = (state = {votes: {}}, action) => {
+  console.log({action, state})
   switch (action.type) {
     case CREATE: {
       if (state.owner) return state

@@ -1463,24 +1463,25 @@ const init = _hyper => {
 
 const actions_actions = {
   createPost: ({ title, description }) => state => {
-    if (!isLoggedIn(state.me)) return router_goto('/login');
     const postId = title.replace(/\W/g, '-').toLowerCase();
     store_room.dispatch({ type: constants["CREATE"], title, postId, description });
     store_room.dispatch({ type: constants["VOTE"], postId });
-    setTimeout(() => router_goto('/'), 0);
-    return Object.assign({}, state, { posts: store_room.getState() });
+    router_goto('/');
+  },
+
+  updatePost: ({ postId, title, description, status }) => state => {
+    store_room.dispatch({ type: constants["UPDATE"], postId, title, description, status });
+    router_goto('/');
   },
 
   vote: postId => state => {
     if (!isLoggedIn(state.me)) return router_goto('/login');
     store_room.dispatch({ type: constants["VOTE"], postId });
-    return Object.assign({}, state, { posts: store_room.getState() });
   },
 
   addComment: ({ postId, text }) => state => {
     if (!isLoggedIn(state.me)) return router_goto('/login');
     store_room.dispatch({ type: constants["COMMENT"], postId, text });
-    return Object.assign({}, state, { posts: store_room.getState() });
   },
 
   updateData: serverState => state => {
@@ -1552,6 +1553,7 @@ const actions_actions = {
 // CONCATENATED MODULE: ./src/components/post.js
  // eslint-disable-line no-unused-vars
 
+
 /* harmony default export */ var components_post = (post => h(
   'div',
   { 'class': 'post' },
@@ -1567,7 +1569,12 @@ const actions_actions = {
     h(
       'div',
       { 'class': 'title' },
-      post.title
+      post.title,
+      post.status === constants["OPEN"] ? '' : h(
+        'span',
+        { 'class': 'status' },
+        post.status
+      )
     ),
     h(
       'div',
@@ -1585,7 +1592,7 @@ const actions_actions = {
       h('path', { d: 'M0 0h24v24H0z', fill: 'none' })
     ),
     '\xA0',
-    post.comments.length
+    post.comments ? post.comments.length : 0
   )
 ));
 // CONCATENATED MODULE: ./src/utils/sort-posts.js
@@ -1698,11 +1705,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       { 'class': 'btn btn-text', onclick: () => goto('/') },
       'Back to All Posts'
     ),
+    '\xA0',
     h(
       'button',
-      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      { 'class': 'btn btn-text', onclick: () => goto(`/edit/${post.postId}`) },
       'Edit'
     ),
+    '\xA0',
     h(
       'button',
       { 'class': 'btn btn-text', onclick: () => goto('/') },
@@ -1737,6 +1746,87 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   return output;
 });
+// CONCATENATED MODULE: ./src/components/post-update.js
+ // eslint-disable-line no-unused-vars
+
+
+/* harmony default export */ var post_update = (({ post, updatePost, goto }) => h(
+  'div',
+  { 'class': 'post-create' },
+  h(
+    'div',
+    { 'class': 'top' },
+    h(
+      'h2',
+      null,
+      'Update Post'
+    ),
+    h(
+      'button',
+      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      'See All Posts'
+    )
+  ),
+  h(
+    'div',
+    { 'class': 'fake-field' },
+    h(
+      'div',
+      { 'class': 'title' },
+      'Title'
+    ),
+    h('input', { 'class': 'input', id: 'title-field', type: 'text', placeholder: 'Short, descriptive title', value: post.title })
+  ),
+  h(
+    'div',
+    { 'class': 'fake-field' },
+    h(
+      'div',
+      { 'class': 'title' },
+      'Details'
+    ),
+    h('textarea', { 'class': 'input', id: 'description-field', placeholder: 'Any additional details...', rows: '3', value: post.description })
+  ),
+  h(
+    'select',
+    { id: 'status-field', value: post.status },
+    h(
+      'option',
+      { value: constants_default.a.PLANNED },
+      'Planned'
+    ),
+    h(
+      'option',
+      { value: constants_default.a.IN_PROGRESS },
+      'In Progress'
+    ),
+    h(
+      'option',
+      { value: constants_default.a.OPEN },
+      'Open'
+    ),
+    h(
+      'option',
+      { value: constants_default.a.COMPLETE },
+      'Complete'
+    ),
+    h(
+      'option',
+      { value: constants_default.a.CLOSED },
+      'Closed'
+    )
+  ),
+  h(
+    'button',
+    { 'class': 'btn btn-text btn-primary create-post', onclick: () => updatePost({
+        postId: post.postId,
+        title: document.getElementById('title-field').value,
+        description: document.getElementById('description-field').value,
+        status: document.getElementById('status-field').value
+      }) },
+    'Update Post'
+  )
+));
 // CONCATENATED MODULE: ./src/components/controls.js
  // eslint-disable-line no-unused-vars
 
@@ -1855,6 +1945,7 @@ var view__extends = Object.assign || function (target) { for (var i = 1; i < arg
 
 
 
+
 /* harmony default export */ var view = (state => actions => {
   if (state.path === '/create') {
     return h(
@@ -1890,6 +1981,20 @@ var view__extends = Object.assign || function (target) { for (var i = 1; i < arg
           'UpSense'
         ),
         h(post_inspect, view__extends({ post: state.posts[postId] }, actions))
+      );
+    }
+  } else if (state.path.indexOf('/edit/') === 0) {
+    const postId = state.path.substr(6);
+    if (state.posts && state.posts[postId]) {
+      return h(
+        'div',
+        { 'class': 'container' },
+        h(
+          'h1',
+          null,
+          'UpSense'
+        ),
+        h(post_update, view__extends({ post: state.posts[postId] }, actions))
       );
     }
   }
@@ -1955,6 +2060,7 @@ const votes = __webpack_require__(5)
 const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = __webpack_require__(0)
 
 module.exports = (state = {votes: {}}, action) => {
+  console.log({action, state})
   switch (action.type) {
     case CREATE: {
       if (state.owner) return state

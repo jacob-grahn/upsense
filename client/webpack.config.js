@@ -1,6 +1,7 @@
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MinifyPlugin = require('babel-minify-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 
 const plugins = [
@@ -8,7 +9,8 @@ const plugins = [
     filename: './bundle.css',
     allChunks: true
   }),
-  new webpack.optimize.ModuleConcatenationPlugin()
+  new webpack.optimize.ModuleConcatenationPlugin(),
+  new HtmlWebpackPlugin({hash: true})
 ]
 
 module.exports = function webpackStuff (env) {
@@ -21,16 +23,14 @@ module.exports = function webpackStuff (env) {
     ],
     output: {
       filename: 'bundle.js',
-      path: path.resolve(__dirname, './')
+      path: path.resolve(__dirname, './dist')
     },
     module: {
       rules: [{
         test: /\.js$/,
         loader: 'babel-loader',
         query: {
-          presets: [
-            'es2017'
-          ],
+          presets: ['es2017'],
           plugins: []
         },
         include: [

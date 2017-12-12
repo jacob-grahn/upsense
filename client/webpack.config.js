@@ -10,7 +10,7 @@ const plugins = [
     allChunks: true
   }),
   new webpack.optimize.ModuleConcatenationPlugin(),
-  new HtmlWebpackPlugin({hash: true})
+  new HtmlWebpackPlugin({hash: true, title: 'UpSense'})
 ]
 
 module.exports = function webpackStuff (env) {

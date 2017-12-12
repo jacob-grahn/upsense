@@ -9,12 +9,12 @@ module.exports = (app) => {
     ctx.body = fs.createReadStream('../client/dist/index.html')
   }))
 
-  app.use(route.get('/bundle.css', (ctx) => {
+  app.use(route.get('*/bundle.css', (ctx) => {
     ctx.type = 'text/css'
     ctx.body = fs.createReadStream('../client/dist/bundle.css')
   }))
 
-  app.use(route.get('/bundle.js', (ctx) => {
+  app.use(route.get('*/bundle.js', (ctx) => {
     ctx.type = 'application/javascript'
     ctx.body = fs.createReadStream('../client/dist/bundle.js')
   }))

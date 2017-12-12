@@ -1488,7 +1488,7 @@ const actions_actions = {
     return Object.assign({}, state, { me: serverState.me }, { posts: roomState });
   },
 
-  sort: event => state => Object.assign({}, state, { sort: event.target.value }),
+  updateSort: event => state => Object.assign({}, state, { sort: event.target.value }),
 
   setPath: path => state => {
     return Object.assign({}, state, { path });
@@ -1588,19 +1588,73 @@ const actions_actions = {
     post.comments.length
   )
 ));
+// CONCATENATED MODULE: ./src/utils/sort-posts.js
+
+
+const filterStatus = (arr, status) => {
+  const posts = arr.filter(post => {
+    return post.status === status;
+  });
+  return sortOnTrending(posts);
+};
+
+const sortOnTrending = arr => {
+  const posts = arr.map(post => {
+    const ageMs = new Date() - post.createdAt;
+    const ageDays = ageMs / 1000 / 60 / 60 / 24;
+    const trendScore = post.total / ageDays;
+    return Object.assign({}, post, { trendScore });
+  });
+  return sortOn(posts, 'trendScore');
+};
+
+const sortOn = (arr, key) => {
+  return sort_posts_sort(arr, (a, b) => {
+    if (a[key] < b[key]) return 1;
+    if (a[key] > b[key]) return -1;
+    return 0;
+  });
+};
+
+const sort_posts_sort = (arr, func) => {
+  const copy = [...arr];
+  copy.sort(func);
+  return copy;
+};
+
+// currying sure would be nice here
+const sorts = {
+  [constants["TRENDING"]]: posts => sortOnTrending(posts),
+  [constants["TOP"]]: posts => sortOn(posts, 'total'),
+  [constants["NEW"]]: posts => sortOn(posts, 'createdAt'),
+  [constants["PLANNED"]]: posts => filterStatus(posts, constants["PLANNED"]),
+  [constants["IN_PROGRESS"]]: posts => filterStatus(posts, constants["IN_PROGRESS"]),
+  [constants["OPEN"]]: posts => filterStatus(posts, constants["OPEN"]),
+  [constants["CLOSED"]]: posts => filterStatus(posts, constants["CLOSED"]),
+  [constants["COMPLETE"]]: posts => filterStatus(posts, constants["COMPLETE"])
+};
 // CONCATENATED MODULE: ./src/components/post-list.js
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
  // eslint-disable-line no-unused-vars
 
 
-/* harmony default export */ var post_list = (({ posts, vote, goto }) => {
+
+/* harmony default export */ var post_list = (({ posts, vote, goto, sort }) => {
+  if (!posts) return h(
+    'span',
+    null,
+    'No posts yet...'
+  );
+
   const postArr = Object.values(posts);
-  if (postArr.length > 0) {
+  const sortFunc = sorts[sort];
+  const sortedPosts = sortFunc(postArr);
+  if (sortedPosts.length > 0) {
     return h(
       'ul',
       { 'class': 'post-list' },
-      postArr.map(post => h(
+      sortedPosts.map(post => h(
         'li',
         null,
         h(components_post, _extends({}, post, { vote: vote, goto: goto }))
@@ -1645,6 +1699,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       'Back to All Posts'
     ),
     h(
+      'button',
+      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      'Edit'
+    ),
+    h(
+      'button',
+      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      'Delete'
+    ),
+    h(
       'div',
       { 'class': 'top' },
       h(
@@ -1678,7 +1742,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
-/* harmony default export */ var controls = (({ goto, sort, me }) => h(
+/* harmony default export */ var controls = (({ goto, updateSort, me }) => h(
   'div',
   { 'class': 'controls' },
   h(
@@ -1687,7 +1751,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     'Showing \xA0',
     h(
       'select',
-      { onchange: sort },
+      { onchange: updateSort },
       h(
         'option',
         { value: constants_default.a.TRENDING },
@@ -1712,6 +1776,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         'option',
         { value: constants_default.a.IN_PROGRESS },
         'In Progress'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.OPEN },
+        'Open'
       ),
       h(
         'option',
@@ -1777,6 +1846,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   )
 ));
 // CONCATENATED MODULE: ./src/components/view.js
+var view__extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
  // eslint-disable-line no-unused-vars
 
 
@@ -1785,19 +1856,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ var view = (state => actions => {
-  if (state.path === '/') {
-    return h(
-      'div',
-      { 'class': 'container' },
-      h(
-        'h1',
-        null,
-        'UpSense'
-      ),
-      h(controls, { goto: actions.goto, me: state.me, sort: actions.sort }),
-      h(post_list, { goto: actions.goto, posts: state.posts, vote: actions.vote })
-    );
-  } else if (state.path === '/create') {
+  if (state.path === '/create') {
     return h(
       'div',
       { 'class': 'container' },
@@ -1821,17 +1880,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     );
   } else if (state.path.indexOf('/posts/') === 0) {
     const postId = state.path.substr(7);
-    return h(
-      'div',
-      { 'class': 'container' },
-      h(
-        'h1',
-        null,
-        'UpSense'
-      ),
-      h(post_inspect, { post: state.posts[postId], goto: actions.goto, vote: actions.vote, addComment: actions.addComment, editPost: actions.editPost })
-    );
+    if (state.posts && state.posts[postId]) {
+      return h(
+        'div',
+        { 'class': 'container' },
+        h(
+          'h1',
+          null,
+          'UpSense'
+        ),
+        h(post_inspect, view__extends({ post: state.posts[postId] }, actions))
+      );
+    }
   }
+
+  // fallback to default route
+  return h(
+    'div',
+    { 'class': 'container' },
+    h(
+      'h1',
+      null,
+      'UpSense'
+    ),
+    h(controls, view__extends({ me: state.me }, actions)),
+    h(post_list, view__extends({ sort: state.sort, posts: state.posts }, actions))
+  );
 });
 // CONCATENATED MODULE: ./src/components/index.js
 
@@ -1878,7 +1952,7 @@ module.exports = (state = {}, action) => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const votes = __webpack_require__(5)
-const { CREATE, UPDATE, VOTE, COMMENT } = __webpack_require__(0)
+const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = __webpack_require__(0)
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -1894,7 +1968,7 @@ module.exports = (state = {votes: {}}, action) => {
         },
         createdAt: action.$timeMs,
         updatedAt: action.$timeMs,
-        status: action.status,
+        status: OPEN,
         total: 0,
         comments: []
       }

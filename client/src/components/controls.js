@@ -2,16 +2,17 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import constants from '../../../shared/constants'
 import { isLoggedIn } from '../utils/is-logged-in'
 
-export default ({ goto, sort, me }) => (
+export default ({ goto, updateSort, me }) => (
   <div class='controls'>
     <div class='showing'>
       Showing &nbsp;
-      <select onchange={sort}>
+      <select onchange={updateSort}>
         <option value={constants.TRENDING}>Trending</option>
         <option value={constants.TOP}>Top</option>
         <option value={constants.NEW}>New</option>
         <option value={constants.PLANNED}>Planned</option>
         <option value={constants.IN_PROGRESS}>In Progress</option>
+        <option value={constants.OPEN}>Open</option>
         <option value={constants.COMPLETE}>Complete</option>
         <option value={constants.CLOSED}>Closed</option>
       </select>

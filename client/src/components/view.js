@@ -6,15 +6,7 @@ import Controls from './controls'
 import Login from './login'
 
 export default (state) => (actions) => {
-  if (state.path === '/') {
-    return (
-      <div class='container'>
-        <h1>UpSense</h1>
-        <Controls goto={actions.goto} me={state.me} sort={actions.sort} />
-        <PostList goto={actions.goto} posts={state.posts} vote={actions.vote} />
-      </div>
-    )
-  } else if (state.path === '/create') {
+  if (state.path === '/create') {
     return (
       <div class='container'>
         <h1>UpSense</h1>
@@ -30,11 +22,22 @@ export default (state) => (actions) => {
     )
   } else if (state.path.indexOf('/posts/') === 0) {
     const postId = state.path.substr(7)
-    return (
-      <div class='container'>
-        <h1>UpSense</h1>
-        <PostInspect post={state.posts[postId]} goto={actions.goto} vote={actions.vote} addComment={actions.addComment} editPost={actions.editPost} />
-      </div>
-    )
+    if (state.posts && state.posts[postId]) {
+      return (
+        <div class='container'>
+          <h1>UpSense</h1>
+          <PostInspect post={state.posts[postId]} {...actions} />
+        </div>
+      )
+    }
   }
+
+  // fallback to default route
+  return (
+    <div class='container'>
+      <h1>UpSense</h1>
+      <Controls me={state.me} {...actions} />
+      <PostList sort={state.sort} posts={state.posts} {...actions} />
+    </div>
+  )
 }

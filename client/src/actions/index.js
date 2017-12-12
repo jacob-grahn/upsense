@@ -30,7 +30,7 @@ const actions = {
     return Object.assign({}, state, {me: serverState.me}, {posts: roomState})
   },
 
-  sort: (event) => (state) => Object.assign(
+  updateSort: (event) => (state) => Object.assign(
     {},
     state,
     {sort: event.target.value}

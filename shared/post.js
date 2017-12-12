@@ -1,5 +1,5 @@
 const votes = require('./votes')
-const { CREATE, UPDATE, VOTE, COMMENT } = require('./constants')
+const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = require('./constants')
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -15,7 +15,7 @@ module.exports = (state = {votes: {}}, action) => {
         },
         createdAt: action.$timeMs,
         updatedAt: action.$timeMs,
-        status: action.status,
+        status: OPEN,
         total: 0,
         comments: []
       }

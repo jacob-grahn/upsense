@@ -1935,8 +1935,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     )
   )
 ));
-// CONCATENATED MODULE: ./src/components/view.js
-var view__extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+// CONCATENATED MODULE: ./src/components/page.js
+var page__extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
  // eslint-disable-line no-unused-vars
 
@@ -1946,72 +1946,45 @@ var view__extends = Object.assign || function (target) { for (var i = 1; i < arg
 
 
 
-/* harmony default export */ var view = (state => actions => {
+/* harmony default export */ var page = (({ state, actions }) => {
   if (state.path === '/create') {
-    return h(
-      'div',
-      { 'class': 'container' },
-      h(
-        'h1',
-        null,
-        'UpSense'
-      ),
-      h(post_create, { goto: actions.goto, createPost: actions.createPost })
-    );
+    return h(post_create, { goto: actions.goto, createPost: actions.createPost });
   } else if (state.path === '/login') {
-    return h(
-      'div',
-      { 'class': 'container' },
-      h(
-        'h1',
-        null,
-        'UpSense'
-      ),
-      h(login, null)
-    );
+    return h(login, null);
   } else if (state.path.indexOf('/posts/') === 0) {
     const postId = state.path.substr(7);
     if (state.posts && state.posts[postId]) {
-      return h(
-        'div',
-        { 'class': 'container' },
-        h(
-          'h1',
-          null,
-          'UpSense'
-        ),
-        h(post_inspect, view__extends({ post: state.posts[postId] }, actions))
-      );
+      return h(post_inspect, page__extends({ post: state.posts[postId] }, actions));
     }
   } else if (state.path.indexOf('/edit/') === 0) {
     const postId = state.path.substr(6);
     if (state.posts && state.posts[postId]) {
-      return h(
-        'div',
-        { 'class': 'container' },
-        h(
-          'h1',
-          null,
-          'UpSense'
-        ),
-        h(post_update, view__extends({ post: state.posts[postId] }, actions))
-      );
+      return h(post_update, page__extends({ post: state.posts[postId] }, actions));
     }
   }
 
   // fallback to default route
   return h(
     'div',
-    { 'class': 'container' },
-    h(
-      'h1',
-      null,
-      'UpSense'
-    ),
-    h(controls, view__extends({ me: state.me }, actions)),
-    h(post_list, view__extends({ sort: state.sort, posts: state.posts }, actions))
+    null,
+    h(controls, page__extends({ me: state.me }, actions)),
+    h(post_list, page__extends({ sort: state.sort, posts: state.posts }, actions))
   );
 });
+// CONCATENATED MODULE: ./src/components/view.js
+ // eslint-disable-line no-unused-vars
+
+
+/* harmony default export */ var view = (state => actions => h(
+  'div',
+  { 'class': 'container' },
+  h(
+    'h1',
+    null,
+    'UpSense'
+  ),
+  h(page, { state: state, actions: actions })
+));
 // CONCATENATED MODULE: ./src/components/index.js
 
 /* harmony default export */ var components = (view);

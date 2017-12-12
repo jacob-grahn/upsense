@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --env production",
     "test": "standard --verbose && npm run build && echo 'SUCCESS!'",
-    "watch": "npm run build && chokidar src/**/* -c \"npm run build\" --debounce 5000"
+    "watch": "webpack && chokidar src/**/* -c webpack"
   },
   "author": "Jacob Grahn",
   "license": "MIT",

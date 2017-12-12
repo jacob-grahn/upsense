@@ -2,6 +2,7 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 
 export default () => (
   <div class='login'>
+    <h2>Click a Site to Login</h2>
     <a href='/auth/twitter'>
       <svg id='Logo_FIXED' data-name='Logo — FIXED' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'>
         <defs>

@@ -1,1 +1,1966 @@
-(function(a){function b(d){if(c[d])return c[d].exports;var e=c[d]={i:d,l:!1,exports:{}};return a[d].call(e.exports,e,e.exports,b),e.l=!0,e.exports}var c={};return b.m=a,b.c=c,b.d=function(a,c,d){b.o(a,c)||Object.defineProperty(a,c,{configurable:!1,enumerable:!0,get:d})},b.n=function(a){var c=a&&a.__esModule?function(){return a['default']}:function(){return a};return b.d(c,'a',c),c},b.o=function(a,b){return Object.prototype.hasOwnProperty.call(a,b)},b.p='',b(b.s=1)})([function(a){a.exports={CREATE:'CREATE',UPDATE:'UPDATE',VOTE:'VOTE',COMMENT:'COMMENT',TRENDING:'TRENDING',TOP:'TOP',NEW:'NEW',PLANNED:'PLANNED',IN_PROGRESS:'IN_PROGRESS',OPEN:'OPEN',CLOSED:'CLOSED',COMPLETE:'COMPLETE'}},function(a,b,c){c(2),a.exports=c(6)},function(a,b,c){'use strict';function d(a,b){for(var c,d=[],e=[],f=arguments.length;2<f--;)d.push(arguments[f]);for(;d.length;)if(Array.isArray(c=d.pop()))for(f=c.length;f--;)d.push(c[f]);else if(null==c||!0===c||!1===c);else e.push('number'==typeof c?c+='':c);return'string'==typeof a?{type:a,props:b||{},children:e}:a(b||{},e)}Object.defineProperty(b,'__esModule',{value:!0});const e=(a,b,c)=>{const d=a.map((a)=>a(b)),e=d.reverse();return e.reduce((a,b)=>b(a),c)},f=()=>{let a=[];return{subscribe:(b)=>(a.push(b),()=>{a=a.filter((a)=>a!==b)}),publish:(...b)=>{a.forEach((a)=>a(...b))}}},g=(a,b=void 0,c=[])=>{let d,g=a(b,{});const h=f(),i=(b)=>{g=a(g,b),h.publish(g,b)},j={dispatch:(a)=>{d(a)},getState:()=>g,subscribe:h.subscribe};return((a)=>{d=e(a,j,i)})(c),j},h=(a,b)=>{Object.keys(a).forEach((c)=>b(a[c],c))},i=(a,b,c)=>(h(a,(a,d)=>c=b(c,a,d)),c),j=(a)=>(b={},c)=>i(a,(a,b,d)=>Object.assign({},a,{[d]:b(a[d],c)}),b),k=(a,b='')=>b?(Array.isArray(b)||(b=b.split('.')),b.reduce((a,b)=>a?a[b]:void 0,a)):a,l=(a,b)=>(c={},d)=>{const e=k(d,b);if(!e)return c;const f=a(c[e],d),g=Object.assign({},c);return void 0===f?delete g[e]:g[e]=f,g},m='patcher/SET',n='jiber/JOIN_ROOM',o='jiber/LEAVE_ROOM',p='jiber/CONFIRMED_STATE',q='jiber/LOGIN_RESULT',r='jiber/WEBRTC_OFFER',s='jiber/WEBRTC_ANSWER',t='jiber/WEBRTC_CANDIDATE',u='SERVER',v='SELF',w=l((a,b)=>{switch(b.type){case n:return Object.assign({},b.$user);case o:return;default:if(!a)return a;if(!b.$confirmed)return a;const c=b.$actionId||0,d=a.actionId||0;return c<=d?a:Object.assign({},a,{actionId:c});}},'$userId'),x=(a={},b)=>b.type===p&&b.$source===u?b.members:w(a,b),y=(a=0,b)=>b.$timeMs||a,z=(a)=>(b=void 0,c)=>{switch(c.type){case p:return c.confirmed;default:return c.$confirmed?a(b,c):b;}},A=(a)=>{const b=j({members:x,lastUpdatedAt:y,confirmed:z(a)});return(a,c)=>{switch(c.type){case'jiber/CLOSE_ROOM':return;default:return b(a,c);}}},B=(a,b,c)=>{if(!b)return c;if(Array.isArray(b)||(b=b.split('.')),0===b.length)return c;const[d,...e]=b,f=a[d]||{},g=B(f,e,c);if(Array.isArray(a)){const b=[...a];return b[+d]=g,b}return Object.assign({},a,{[d]:g})},C=(a,b)=>{const c={};return h(a,(a,d)=>c[d]=b(a,d)),c},D=(a)=>()=>(b)=>(c)=>{c.$confirmed||c.$userId||a(c),b(c)};let E=1;const F=()=>(a)=>(b)=>(b.$actionId||(b.$actionId=E++),a(b));let G=1;const H=(a)=>(b)=>(c)=>{const d=c.$roomId,e=a.getState();if(!d||!e.rooms[d])return b(c);if(c.$actionId||(c.$actionId=G++),c.$timeMs||(c.$timeMs=new Date().getTime()),c.$source||(c.$source=v),c.$userId){const a=e.rooms[d];c.$user=a.members[c.$userId]||c.$user}else e.me&&(c.$userId=e.me.userId,c.$user=e.me);return b(c)},I=(a)=>{const{url:b,credential:c,backoffMs:d}=a;return b?new Promise((a)=>{const e=(b)=>{delete b.onclose,delete b.onopen,a(b)},f=(a=0)=>{setTimeout(()=>{const d=new WebSocket(b,c);d.onclose=()=>f(a+1),d.onopen=()=>e(d)},a*d)};f()}):Promise.reject('NO_URL')};var J=this&&this.__awaiter||function(a,b,c,d){return new(c||(c=Promise))(function(e,f){function g(a){try{i(d.next(a))}catch(a){f(a)}}function h(a){try{i(d['throw'](a))}catch(a){f(a)}}function i(a){a.done?e(a.value):new c(function(b){b(a.value)}).then(g,h)}i((d=d.apply(a,b||[])).next())})};const K=(a)=>{let b;const c={send:(a)=>{b&&b.readyState===b.OPEN&&b.send(a)}},d=()=>J(this,void 0,void 0,function*(){b=yield I(a),c.onmessage&&(b.onmessage=c.onmessage),b.onclose=()=>setTimeout(d,3e3)});return d(),c},L=(a,b)=>C(b,(b)=>(...c)=>a(b(...c))),M=(a,b={})=>(c)=>{const d=()=>{const b=a.getState();return b.rooms[c]},e=(b)=>{a.dispatch(Object.assign({},b,{$roomId:c}))},g=L(e,b);e({type:n});const h=f();return a.subscribe((a,b)=>{b&&b.$roomId===c&&h.publish(a.rooms[c].optimistic,b)}),Object.assign({},g,{dispatch:e,getState:()=>k(d(),'optimistic'),getConfirmedState:()=>k(d(),'confirmed'),subscribe:h.subscribe})},N={reducer:(a={},b)=>{switch(b.type){case m:return'object'==typeof b.set?Object.assign({},a,b.set):a;default:return a;}},middleware:[],url:void 0,stunServers:['stun:stun.jiber.io'],credential:void 0,initialState:void 0,backoffMs:5e3,actionCreators:{set:(a)=>({type:m,set:a})},maxPeers:10},O=(a,b)=>a.filter((a)=>!!a.$userId&&(a.$userId!==b.$userId||(a.$actionId||0)>(b.$actionId||0))),P=(a,b)=>b.type===n||b.type===o?a:b.$user?(b.$actionId||0)>(b.$user.actionId||0)?[...a,b]:a:[...a,b],Q=(a=[],b)=>{switch(b.type){case p:return[];case o:return a.filter((a)=>a.$userId!==b.$userId);default:return b.$confirmed?O(a,b):P(a,b);}},R=(a)=>(b,c)=>{const d=b.optimistic;if(c.type===p){const{pendingActions:c}=b;return c.reduce(a,b.confirmed)}const e=k(c,'$user.actionId')||0,f=c.$actionId||0;if(c.$confirmed){const{pendingActions:c,confirmed:d}=b;return c.reduce(a,d)}return f>e?a(d,c):d},S={lastUpdatedAt:0,members:{},confirmed:void 0,optimistic:void 0,pendingActions:[]},T=(a)=>{const b=A(a),c=R(a);return(a=S,d)=>{const e=b(a,d);return e.pendingActions=Q(e.pendingActions,d),e.optimistic=c(e,d),e}},U=(a={userId:'$timeMsemp'},b)=>{switch(b.type){case q:return b.user;default:return a;}},V=(a)=>{const b=T(a),c=l(b,'$roomId'),d=j({rooms:c,me:U});return d},W=(a,b)=>{let c;const d={send:(a)=>{if(c&&'open'===c.readyState){const b=Object.assign({},a,{$user:void 0,$userId:void 0,$timeMs:void 0});c.send(JSON.stringify(b))}}},e=(a)=>{a.onmessage=(a)=>{d.onmessage&&d.onmessage(a)}};if(b){c=a.createDataChannel('data',{ordered:!1,maxRetransmits:0}),e(c)}else a.ondatachannel=(a)=>{c=a.channel,e(c)};return d},X=(a,b,c)=>{if(!c.$roomId)return!1;if(c.$source!==v)return!1;const d=a.rooms[c.$roomId];return!!d.members[b]},Y=(a)=>console.log(a);var Z=this&&this.__awaiter||function(a,b,c,d){return new(c||(c=Promise))(function(e,f){function g(a){try{i(d.next(a))}catch(a){f(a)}}function h(a){try{i(d['throw'](a))}catch(a){f(a)}}function i(a){a.done?e(a.value):new c(function(b){b(a.value)}).then(g,h)}i((d=d.apply(a,b||[])).next())})};const $=(a,b,c,d)=>{const e=(b)=>Z(this,void 0,void 0,function*(){const d=yield b.createAnswer();yield b.setLocalDescription(d),a({type:s,answer:d,peerUserId:c})}),f=(b)=>{a({type:t,candidate:b,peerUserId:c})};return b.onicecandidate=(a)=>{a.candidate&&f(a.candidate)},d?((a)=>Z(this,void 0,void 0,function*(){return yield b.setRemoteDescription(a),e(b)}))(d).catch(Y):(()=>Z(this,void 0,void 0,function*(){const d=yield b.createOffer();yield b.setLocalDescription(d),a({type:r,offer:d,peerUserId:c})}))().catch(Y),{onAction:(a)=>Z(this,void 0,void 0,function*(){if(a.$confirmed&&a.$userId===c)switch(a.type){case s:return b.setRemoteDescription(a.answer);case t:return b.addIceCandidate(a.candidate);}})}},_=(a,b,c)=>{const d=JSON.parse(c.data),e=d.$roomId;if(e){const c=a.getState().rooms[e],f=c.members,g=f[b];g&&(d.$timeMs=new Date().getTime(),d.$userId=b,d.$source='PEER',d.$user=g,a.dispatch(d))}},aa=(a)=>{const b={iceServers:a.map((a)=>({urls:a}))};return new RTCPeerConnection(b)},ba=(a,b,c,d)=>{const e=aa(c.stunServers),f=W(e,!d),g=$(b.dispatch,e,a,d);f.onmessage=(c)=>{_(b,a,c)};const h=b.subscribe((c)=>{g.onAction(c).catch(Y);const d=b.getState();X(d,a,c)&&f.send(c)});return{peerUserId:a,close:()=>{h(),e.close()}}},ca=()=>{const a=window;['RTCPeerConnection','RTCIceCandidate','RTCSessionDescription'].forEach((b)=>{a[b]=a[b]||a[`moz${b}`]||a[`webkit${b}`]})},da=(a,b)=>{ca();const c={},d=(a)=>i(a.rooms,(a,b)=>Object.assign(a,b.members),{}),e=(a)=>{const b=c[a];b&&(b.close(),delete c[a])},f=()=>{const b=d(a.getState());h(c,(a)=>{b[a.peerUserId]||e(a.peerUserId)})},g=(d,e)=>{c[d]||Object.keys(c).length>=b.maxPeers||(c[d]=ba(d,a,b,e))};a.subscribe((b)=>{if(b.$confirmed)switch(b.type){case o:return f();case n:return b.$userId?b.$userId===a.getState().me.userId?void 0:g(b.$userId):void 0;case r:return b.$userId?g(b.$userId,b.offer):void 0;}})},ea=(a,b,c)=>{switch(c.type){case q:{const c=b();return void h(c.rooms,(b,c)=>{a({type:n,$roomId:c})})}case p:{if(!c.$roomId)return;const d=b(),e=d.rooms[c.$roomId];return void(e&&e.pendingActions.forEach(a))}}};var fa=c(3),ga=c.n(fa);const ha=((a={})=>{const b=Object.assign({},N,a),c=V(b.reducer),d=K(b),e=(a)=>d.send(JSON.stringify(a)),f=D(e),h=[...b.middleware,F,f,H],i=g(c,b.initialState,h),j=M(i,b.actionCreators),k=Object.assign({},i,{createRoom:j});return d.onmessage=(a)=>{const b=JSON.parse(a.data);b.$confirmed=!0,b.$source=u,ea(e,i.getState,b),i.dispatch(b)},da(i,b),k})({url:'ws:\\localhost:3000',reducer:ga.a}),ia=ha.createRoom('test');var ja=c(0),ka=c.n(ja);const la=(a)=>a&&a.provider,ma=(a)=>(b)=>Object.assign({},b,{path:a});var na=({createPost:a,goto:b})=>d('div',{class:'post-create'},d('div',{class:'top'},d('h2',null,'Create a Post'),d('button',{class:'btn btn-text',onclick:()=>b('/')},'See All Posts')),d('div',{class:'fake-field'},d('div',{class:'title'},'Title'),d('input',{class:'input',id:'title-field',type:'text',placeholder:'Short, descriptive title'})),d('div',{class:'fake-field'},d('div',{class:'title'},'Details'),d('textarea',{class:'input',id:'description-field',placeholder:'Any additional details...',rows:'3'})),d('button',{class:'btn btn-text btn-primary create-post',onclick:()=>a({title:document.getElementById('title-field').value,description:document.getElementById('description-field').value})},'Create Post')),oa=(a)=>d('div',{class:'post'},d('div',{class:'vote',onclick:()=>a.vote(a.postId)},d('div',{class:'arrow-up'}),a.total),d('div',{class:'content',onclick:()=>a.goto(`/posts/${a.postId}`)},d('div',{class:'title'},a.title),d('div',{class:'description'},a.description)),d('div',{class:'comments',onclick:()=>a.goto(`/posts/${a.postId}`)},d('svg',{fill:'#ccc',height:'24',width:'24'},d('path',{d:'M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'}),d('path',{d:'M0 0h24v24H0z',fill:'none'})),'\xA0',a.comments.length)),pa=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},qa=({posts:a,vote:b,goto:c})=>{const e=Object.values(a);return 0<e.length?d('ul',{class:'post-list'},e.map((a)=>d('li',null,d(oa,pa({},a,{vote:b,goto:c}))))):d('span',null,'No posts yet...')},ra=({user:a,text:b})=>d('div',{class:'comment'},d('div',{class:'name'},a.name||a.userId),d('div',{class:'text'},b)),sa=({post:a,goto:b,vote:c,addComment:e,editPost:f})=>{const g=d('div',{class:'post-inspect'},d('button',{class:'btn btn-text',onclick:()=>b('/')},'Back to All Posts'),d('div',{class:'top'},d('div',{class:'vote',onclick:()=>c(a.postId)},d('div',{class:'arrow-up'}),a.total),d('div',{class:'title'},a.title)),d(ra,{user:a.owner,text:a.description}),a.comments.map((a)=>d(ra,a)),d('input',{id:'comment-box',type:'text',placeholder:'Add a comment...',onkeydown:(b)=>{if(13===b.keyCode){const b=document.getElementById('comment-box'),c=b.value;b.value='',e({postId:a.postId,text:c})}}}));return g},ta=({goto:a,sort:b,me:c})=>d('div',{class:'controls'},d('div',{class:'showing'},'Showing \xA0',d('select',{onchange:b},d('option',{value:ka.a.TRENDING},'Trending'),d('option',{value:ka.a.TOP},'Top'),d('option',{value:ka.a.NEW},'New'),d('option',{value:ka.a.PLANNED},'Planned'),d('option',{value:ka.a.IN_PROGRESS},'In Progress'),d('option',{value:ka.a.COMPLETE},'Complete'),d('option',{value:ka.a.CLOSED},'Closed'))),d('div',{class:'group'},d('button',{class:'btn btn-primary',onclick:()=>la(c)?a('/create'):a('/login')},d('svg',{height:'24',width:'24',xmlns:'http://www.w3.org/2000/svg'},d('path',{d:'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'}),d('path',{d:'M0 0h24v24H0z',fill:'none'}))))),ua=()=>d('div',{class:'login'},d('a',{href:'/auth/twitter'},d('svg',{id:'Logo_FIXED',"data-name":'Logo \u2014 FIXED',xmlns:'http://www.w3.org/2000/svg',viewBox:'0 0 400 400'},d('defs',null,d('style',null,'.cls-1{fill:none;}.cls-2{fill:#1da1f2;}')),d('title',null,'Twitter_Logo_Blue'),d('rect',{class:'cls-1',width:'400',height:'400'}),d('path',{class:'cls-2',d:'M153.62,301.59c94.34,0,145.94-78.16,145.94-145.94,0-2.22,0-4.43-.15-6.63A104.36,104.36,0,0,0,325,122.47a102.38,102.38,0,0,1-29.46,8.07,51.47,51.47,0,0,0,22.55-28.37,102.79,102.79,0,0,1-32.57,12.45,51.34,51.34,0,0,0-87.41,46.78A145.62,145.62,0,0,1,92.4,107.81a51.33,51.33,0,0,0,15.88,68.47A50.91,50.91,0,0,1,85,169.86c0,.21,0,.43,0,.65a51.31,51.31,0,0,0,41.15,50.28,51.21,51.21,0,0,1-23.16.88,51.35,51.35,0,0,0,47.92,35.62,102.92,102.92,0,0,1-63.7,22A104.41,104.41,0,0,1,75,278.55a145.21,145.21,0,0,0,78.62,23'}))));const va={me:void 0,posts:ia.getState(),sort:ja.TRENDING,path:'/'},wa=function(a,b){function c(a,b){return a&&d(a.tagName.toLowerCase(),{},b.call(a.childNodes,function(a){return 3===a.nodeType?a.nodeValue:c(a,b)}))}function e(a,b){for(var c in b)a[c]=b[c];return a}function f(a,b){return e(e({},a),b)}function g(a,b,c){var d={};return 0===a.length?b:(d[a[0]]=1<a.length?g(a.slice(1),b,c[a[0]]):b,f(c,d))}function h(a,b){for(var c=0;c<a.length;c++)b=b[a[c]];return b}function i(a){return'function'==typeof a}function j(a,b,c,d){for(var e in c)i(c[e])?function(c,e){b[c]=function(c){return a=h(d,w),i(c=e(c))&&i(c=c(a))&&(c=c(b)),c&&c!==a&&!c.then&&r(w=g(d,f(a,c),w)),c}}(e,c[e]):j(a[e]||(a[e]={}),b[e]={},c[e],d.concat(e))}function k(a){if(a&&a.props)return a.props.key}function l(a,b,c,d){if('key'===b);else if('style'===b)for(var e in f(d,c=c||{}))a.style[e]=null==c[e]?'':c[e];else{try{a[b]=null==c?'':c}catch(a){}i(c)||(null==c||!1===c?a.removeAttribute(b):a.setAttribute(b,c))}}function m(a,b){if('string'==typeof a)var c=document.createTextNode(a);else{var c=(b=b||'svg'===a.type)?document.createElementNS('http://www.w3.org/2000/svg',a.type):document.createElement(a.type);a.props.oncreate&&v.push(function(){a.props.oncreate(c)});for(var d=0;d<a.children.length;d++)c.appendChild(m(a.children[d],b));for(var d in a.props)l(c,d,a.props[d])}return c}function n(a,b,c){for(var d in f(b,c)){var e=c[d],g='value'==d||'checked'==d?a[d]:b[d];e!==g&&l(a,d,e,g)}c.onupdate&&v.push(function(){c.onupdate(a,b)})}function o(a,b,c){function d(){a.removeChild(b)}c&&c.onremove?c.onremove(b,d):d()}function p(a,b,c,d,e,f){if(c===d);else if(null==c)b=a.insertBefore(m(d,e),b);else if(null!=d.type&&d.type===c.type){n(b,c.props,d.props),e=e||'svg'===d.type;for(var g=d.children.length,h=c.children.length,l={},q=[],r={},s=0;s<h;s++){var i=q[s]=b.childNodes[s],t=c.children[s],u=k(t);null!=u&&(l[u]=[i,t])}for(var s=0,v=0;v<g;){var i=q[s],t=c.children[s],j=d.children[v],u=k(t);if(r[u]){s++;continue}var w=k(j),x=l[w]||[];null==w?(null==u&&(p(b,i,t,j,e),v++),s++):(u===w?(p(b,x[0],x[1],j,e),s++):x[0]?(b.insertBefore(x[0],i),p(b,x[0],x[1],j,e)):p(b,i,null,j,e),v++,r[w]=j)}for(;s<h;){var t=c.children[s],u=k(t);null==u&&o(b,q[s],t.props),s++}for(var s in l){var x=l[s],y=x[1];r[y.props.key]||o(b,x[0],y.props)}}else b&&d!==b.nodeValue&&('string'==typeof d&&'string'==typeof c?b.nodeValue=d:(b=a.insertBefore(m(d,e),f=b),o(a,f,c.props)));return b}function q(c){for(s=!s,i(c=a.view(w))&&(c=c(x)),s||(t=p(b,t,u,u=c));c=v.pop();)c()}function r(){a.view&&!s&&setTimeout(q,s=!s)}var s,t=(b=b||document.body).children[0],u=c(t,[].map),v=[],w=a.state||{},x={};return r(j(w,x,a.actions,[])),x}({state:va,actions:{createPost:({title:a,description:b})=>(c)=>{if(!la(c.me))return ma('/login')(c);const d=a.replace(/\W/g,'-').toLowerCase();return ia.dispatch({type:ja.CREATE,title:a,postId:d,description:b}),Object.assign({},c,{posts:ia.getState(),path:'/'})},vote:(a)=>(b)=>la(b.me)?(ia.dispatch({type:ja.VOTE,postId:a}),Object.assign({},b,{posts:ia.getState()})):ma('/login')(b),addComment:({postId:a,text:b})=>(c)=>la(c.me)?(ia.dispatch({type:ja.COMMENT,postId:a,text:b}),Object.assign({},c,{posts:ia.getState()})):ma('/login')(c),updateData:(a)=>(b)=>{const c=a.rooms.test.confirmed;return Object.assign({},b,{me:a.me},{posts:c})},sort:(a)=>(b)=>Object.assign({},b,{sort:a.target.value}),goto:ma},view:(a)=>(b)=>{if('/'===a.path)return d('div',{class:'container'},d('h1',null,'UpSense'),d(ta,{goto:b.goto,me:a.me,sort:b.sort}),d(qa,{goto:b.goto,posts:a.posts,vote:b.vote}));if('/create'===a.path)return d('div',{class:'container'},d('h1',null,'UpSense'),d(na,{goto:b.goto,createPost:b.createPost}));if('/login'===a.path)return d('div',{class:'container'},d('h1',null,'UpSense'),d(ua,null));if(0===a.path.indexOf('/posts/')){const c=a.path.substr(7);return d('div',{class:'container'},d('h1',null,'UpSense'),d(sa,{post:a.posts[c],goto:b.goto,vote:b.vote,addComment:b.addComment,editPost:b.editPost}))}}});ha.subscribe(wa.updateData)},function(a,b,c){const d=c(4);a.exports=(a={},b)=>{const c=b.postId;return c?b.$user.provider?Object.assign({},a,{[c]:d(a[c],b)}):a:a}},function(a,b,c){const d=c(5),{CREATE:e,UPDATE:f,VOTE:g,COMMENT:h}=c(0);a.exports=(a={votes:{}},b)=>{switch(b.type){case e:return a.owner?a:{postId:b.postId,title:b.title,description:b.description,owner:{userId:b.$userId,name:b.$user.name},createdAt:b.$timeMs,updatedAt:b.$timeMs,status:b.status,total:0,comments:[]};case f:return b.$userId===a.owner.userId||b.$user.admin?Object.assign({},a,{title:b.title,description:b.description,updatedAt:b.$timeMs,status:b.status}):a;case g:{const c=d(a.votes,b),e=Object.values(c);return Object.assign({},a,{votes:c,total:e.reduce((a,b)=>a+b,0)})}case h:{if(!b.text||4>=b.text.length)return a;const c=a.comments.slice();return c.push({user:{userId:b.$userId,name:b.$user.name},text:b.text}),Object.assign({},a,{comments:c})}default:return a;}}},function(a,b,c){const{VOTE:d}=c(0);a.exports=(a={},b)=>{switch(b.type){case d:return a[b.$userId]?Object.assign({},a,{[b.$userId]:0}):Object.assign({},a,{[b.$userId]:1});default:return a;}}},function(){}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // actions
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  VOTE: 'VOTE',
+  COMMENT: 'COMMENT',
+
+  // sort
+  TRENDING: 'TRENDING',
+  TOP: 'TOP',
+  NEW: 'NEW',
+
+  // statuses
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  COMPLETE: 'COMPLETE'
+}
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(2);
+module.exports = __webpack_require__(6);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+// CONCATENATED MODULE: ./node_modules/hyperapp/src/index.js
+function app(props, container) {
+  var lock
+  var root = (container = container || document.body).children[0]
+  var node = vnode(root, [].map)
+  var lifecycle = []
+  var appState = props.state || {}
+  var appActions = {}
+
+  repaint(init(appState, appActions, props.actions, []))
+
+  return appActions
+
+  function vnode(element, map) {
+    return (
+      element &&
+      h(
+        element.tagName.toLowerCase(),
+        {},
+        map.call(element.childNodes, function(element) {
+          return element.nodeType === 3
+            ? element.nodeValue
+            : vnode(element, map)
+        })
+      )
+    )
+  }
+
+  function set(to, from) {
+    for (var i in from) {
+      to[i] = from[i]
+    }
+    return to
+  }
+
+  function merge(to, from) {
+    return set(set({}, to), from)
+  }
+
+  function setDeep(path, value, from) {
+    var to = {}
+    return 0 === path.length
+      ? value
+      : ((to[path[0]] =
+          1 < path.length
+            ? setDeep(path.slice(1), value, from[path[0]])
+            : value),
+        merge(from, to))
+  }
+
+  function get(path, from) {
+    for (var i = 0; i < path.length; i++) {
+      from = from[path[i]]
+    }
+    return from
+  }
+
+  function isFunction(any) {
+    return "function" === typeof any
+  }
+
+  function init(state, actions, from, path) {
+    for (var key in from) {
+      isFunction(from[key])
+        ? (function(key, action) {
+            actions[key] = function(data) {
+              state = get(path, appState)
+
+              if (
+                isFunction((data = action(data))) &&
+                isFunction((data = data(state)))
+              ) {
+                data = data(actions)
+              }
+
+              if (data && data !== state && !data.then) {
+                repaint(
+                  (appState = setDeep(path, merge(state, data), appState))
+                )
+              }
+
+              return data
+            }
+          })(key, from[key])
+        : init(
+            state[key] || (state[key] = {}),
+            (actions[key] = {}),
+            from[key],
+            path.concat(key)
+          )
+    }
+  }
+
+  function getKey(node) {
+    if (node && node.props) {
+      return node.props.key
+    }
+  }
+
+  function setElementProp(element, name, value, oldValue) {
+    if (name === "key") {
+    } else if (name === "style") {
+      for (var i in merge(oldValue, (value = value || {}))) {
+        element.style[i] = null == value[i] ? "" : value[i]
+      }
+    } else {
+      try {
+        element[name] = null == value ? "" : value
+      } catch (_) {}
+
+      if (!isFunction(value)) {
+        if (null == value || false === value) {
+          element.removeAttribute(name)
+        } else {
+          element.setAttribute(name, value)
+        }
+      }
+    }
+  }
+
+  function createElement(node, isSVG) {
+    if (typeof node === "string") {
+      var element = document.createTextNode(node)
+    } else {
+      var element = (isSVG = isSVG || node.type === "svg")
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
+        : document.createElement(node.type)
+
+      if (node.props.oncreate) {
+        lifecycle.push(function() {
+          node.props.oncreate(element)
+        })
+      }
+
+      for (var i = 0; i < node.children.length; i++) {
+        element.appendChild(createElement(node.children[i], isSVG))
+      }
+
+      for (var i in node.props) {
+        setElementProp(element, i, node.props[i])
+      }
+    }
+    return element
+  }
+
+  function updateElement(element, oldProps, props) {
+    for (var i in merge(oldProps, props)) {
+      var value = props[i]
+      var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
+
+      if (value !== oldValue) {
+        setElementProp(element, i, value, oldValue)
+      }
+    }
+
+    if (props.onupdate) {
+      lifecycle.push(function() {
+        props.onupdate(element, oldProps)
+      })
+    }
+  }
+
+  function removeElement(parent, element, props) {
+    function done() {
+      parent.removeChild(element)
+    }
+
+    if (props && props.onremove) {
+      props.onremove(element, done)
+    } else {
+      done()
+    }
+  }
+
+  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+    if (oldNode === node) {
+    } else if (null == oldNode) {
+      element = parent.insertBefore(createElement(node, isSVG), element)
+    } else if (node.type != null && node.type === oldNode.type) {
+      updateElement(element, oldNode.props, node.props)
+
+      isSVG = isSVG || node.type === "svg"
+
+      var len = node.children.length
+      var oldLen = oldNode.children.length
+      var oldKeyed = {}
+      var oldElements = []
+      var keyed = {}
+
+      for (var i = 0; i < oldLen; i++) {
+        var oldElement = (oldElements[i] = element.childNodes[i])
+        var oldChild = oldNode.children[i]
+        var oldKey = getKey(oldChild)
+
+        if (null != oldKey) {
+          oldKeyed[oldKey] = [oldElement, oldChild]
+        }
+      }
+
+      var i = 0
+      var j = 0
+
+      while (j < len) {
+        var oldElement = oldElements[i]
+        var oldChild = oldNode.children[i]
+        var newChild = node.children[j]
+
+        var oldKey = getKey(oldChild)
+        if (keyed[oldKey]) {
+          i++
+          continue
+        }
+
+        var newKey = getKey(newChild)
+        var keyedNode = oldKeyed[newKey] || []
+
+        if (null == newKey) {
+          if (null == oldKey) {
+            patch(element, oldElement, oldChild, newChild, isSVG)
+            j++
+          }
+          i++
+        } else {
+          if (oldKey === newKey) {
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            i++
+          } else if (keyedNode[0]) {
+            element.insertBefore(keyedNode[0], oldElement)
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+          } else {
+            patch(element, oldElement, null, newChild, isSVG)
+          }
+
+          j++
+          keyed[newKey] = newChild
+        }
+      }
+
+      while (i < oldLen) {
+        var oldChild = oldNode.children[i]
+        var oldKey = getKey(oldChild)
+        if (null == oldKey) {
+          removeElement(element, oldElements[i], oldChild.props)
+        }
+        i++
+      }
+
+      for (var i in oldKeyed) {
+        var keyedNode = oldKeyed[i]
+        var reusableNode = keyedNode[1]
+        if (!keyed[reusableNode.props.key]) {
+          removeElement(element, keyedNode[0], reusableNode.props)
+        }
+      }
+    } else if (element && node !== element.nodeValue) {
+      if (typeof node === "string" && typeof oldNode === "string") {
+        element.nodeValue = node
+      } else {
+        element = parent.insertBefore(
+          createElement(node, isSVG),
+          (nextSibling = element)
+        )
+        removeElement(parent, nextSibling, oldNode.props)
+      }
+    }
+
+    return element
+  }
+
+  function render(next) {
+    lock = !lock
+
+    if (isFunction((next = props.view(appState)))) {
+      next = next(appActions)
+    }
+
+    if (!lock) {
+      root = patch(container, root, node, (node = next))
+    }
+
+    while ((next = lifecycle.pop())) next()
+  }
+
+  function repaint() {
+    if (props.view && !lock) {
+      setTimeout(render, (lock = !lock))
+    }
+  }
+}
+
+function h(type, props) {
+  var node
+  var stack = []
+  var children = []
+
+  for (var i = arguments.length; i-- > 2; ) {
+    stack.push(arguments[i])
+  }
+
+  while (stack.length) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (i = node.length; i--; ) {
+        stack.push(node[i])
+      }
+    } else if (null == node || node === true || node === false) {
+    } else {
+      children.push(typeof node === "number" ? (node = node + "") : node)
+    }
+  }
+
+  return typeof type === "string"
+    ? {
+        type: type,
+        props: props || {},
+        children: children
+      }
+    : type(props || {}, children)
+}
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/init-middleware.js
+/**
+ * Chain a bunch of middleware together
+ */
+const initMiddleware = (middlewares, store, final) => {
+    const withStore = middlewares.map(mid => mid(store)); // give each middleware the store
+    const reversed = withStore.reverse();
+    return reversed.reduce(// set up each middleware to call the next
+    (next, mid) => mid(next), final // the final middleware calls final(action)
+    );
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/subscription.js
+const createSubscription = () => {
+    // all of the listeners that have subscribed
+    let subscribers = [];
+    // add a listener, and return a function to remove that listener
+    const subscribe = (listener) => {
+        subscribers.push(listener);
+        return () => {
+            subscribers = subscribers.filter(subscriber => subscriber !== listener);
+        };
+    };
+    // send a message to all listeners
+    const publish = (...args) => {
+        subscribers.forEach(subscriber => subscriber(...args));
+    };
+    // public interface
+    return { subscribe, publish };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/store.js
+
+
+/**
+ * A store holds sate, and provides an interface to dispatch actions that
+ * act on that state
+ */
+const createStore = (reducer, initialState = undefined, middlewares = []) => {
+    let state = reducer(initialState, {});
+    let applyMiddleware;
+    const subscription = createSubscription();
+    const dispatch = (action) => {
+        applyMiddleware(action); // applyMiddleware will evantually call applyAction
+    };
+    const applyAction = (action) => {
+        state = reducer(state, action);
+        subscription.publish(state, action);
+    };
+    const getState = () => {
+        return state;
+    };
+    const store = { dispatch, getState, subscribe: subscription.subscribe };
+    const setMiddleware = (middlewares) => {
+        applyMiddleware = initMiddleware(middlewares, store, applyAction);
+    };
+    setMiddleware(middlewares);
+    return store;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/allow-actions.js
+/**
+ * Whitelist of actions to allow through to the subReducer
+ */
+const createAllowActions = (subReducer, allowedActions) => {
+    const defaultState = subReducer(undefined, {});
+    return (state = defaultState, action) => {
+        if (allowedActions.indexOf(action.type) === -1)
+            return state;
+        return subReducer(state, action);
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/for-each.js
+/*
+ * This does the same thing as Array.forEach, but for objects
+ * It's probably best not to use this with arrays, because the index keys
+ * will be strings
+ */
+const forEach = (obj, func) => {
+    Object.keys(obj).forEach(key => func(obj[key], key));
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/reduce.js
+
+/**
+ * A version of reduce that works with objects
+ */
+const reduce = (obj, func, collector) => {
+    forEach(obj, (value, key) => collector = func(collector, value, key));
+    return collector;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/combine-reducers.js
+
+/**
+ * Take a collection of reducers to produce a single reducer
+ */
+const combineReducers = (reducerDict) => {
+    return (state = {}, action) => {
+        return reduce(reducerDict, (state, reducer, key) => {
+            return Object.assign({}, state, { [key]: reducer(state[key], action) });
+        }, state);
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/get.js
+/**
+ * Return the value of a path
+ */
+const get = (value, path = '') => {
+    if (!path)
+        return value;
+    if (!Array.isArray(path))
+        path = path.split('.');
+    return path.reduce((value, key) => value ? value[key] : undefined, value);
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/dictionary.js
+
+/**
+ * Factory to create a dict reducer that stores sub-states by key,
+ * and updates those sub-states using the provided reducer
+ */
+const createDictionary = (reducer, idKey) => {
+    return (state = {}, action) => {
+        const id = get(action, idKey);
+        if (!id)
+            return state;
+        const subState = reducer(state[id], action);
+        const newState = Object.assign({}, state);
+        if (subState === undefined) {
+            delete newState[id];
+        }
+        else {
+            newState[id] = subState;
+        }
+        return newState;
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/patcher.js
+const SET = 'patcher/SET';
+/**
+ * A very simple reducer that conbines the old state with whatever new values
+ * you provide
+ */
+const patcher = (state = {}, action) => {
+    switch (action.type) {
+        case SET:
+            if (typeof action.set !== 'object')
+                return state;
+            return Object.assign({}, state, action.set);
+        default:
+            return state;
+    }
+};
+const patcherActionCreators = {
+    set: (obj) => ({ type: SET, set: obj })
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/constants/action-types.js
+const JOIN_ROOM = 'jiber/JOIN_ROOM';
+const LEAVE_ROOM = 'jiber/LEAVE_ROOM';
+const CONFIRMED_STATE = 'jiber/CONFIRMED_STATE';
+const CLOSE_ROOM = 'jiber/CLOSE_ROOM';
+const ADD_USER = 'jiber/ADD_USER';
+const REMOVE_USER = 'jiber/REMOVE_USER';
+const LOGIN_RESULT = 'jiber/LOGIN_RESULT';
+const INIT_SOCKET = 'jiber/INIT_SOCKET';
+const REMOVE_SOCKET = 'jiber/REMOVE_SOCKET';
+const WEBRTC_OFFER = 'jiber/WEBRTC_OFFER';
+const WEBRTC_ANSWER = 'jiber/WEBRTC_ANSWER';
+const WEBRTC_CANDIDATE = 'jiber/WEBRTC_CANDIDATE';
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/user.js
+
+/**
+ * Keep track of the users that are connected to the server
+ */
+const user_user = (state, action) => {
+    switch (action.type) {
+        case ADD_USER:
+            return action.user;
+        case REMOVE_USER:
+            return undefined;
+        default:
+            return state;
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/constants/sources.js
+const SERVER = 'SERVER';
+const PEER = 'PEER';
+const SELF = 'SELF';
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/member.js
+
+/**
+ * Keep track of a user who has joined this room
+ */
+const member = (state, action) => {
+    switch (action.type) {
+        case JOIN_ROOM:
+            return Object.assign({}, action.$user);
+        case LEAVE_ROOM:
+            return undefined;
+        default:
+            if (!state)
+                return state;
+            if (!action.$confirmed)
+                return state;
+            const newActionId = action.$actionId || 0;
+            const oldActionId = state.actionId || 0;
+            if (newActionId <= oldActionId)
+                return state;
+            return Object.assign({}, state, { actionId: newActionId });
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/members.js
+
+
+
+
+const memberDict = createDictionary(member, '$userId');
+const members_members = (state = {}, action) => {
+    if (action.type === CONFIRMED_STATE && action.$source === SERVER) {
+        return action.members;
+    }
+    return memberDict(state, action);
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/last-updated-at.js
+/**
+ * Keep track of when the store was updated lastUpdatedAt
+ */
+const lastUpdatedAt = (state = 0, action) => {
+    return action.$timeMs || state;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/confirmed.js
+
+/**
+ * State that has been confirmed
+ * Only confirmed actions should be passed to this reducer
+ */
+const createConfirmed = (subReducer) => {
+    return (state = undefined, action) => {
+        switch (action.type) {
+            case CONFIRMED_STATE:
+                return action.confirmed;
+            default:
+                if (action.$confirmed) {
+                    return subReducer(state, action);
+                }
+                return state;
+        }
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/reducers/room.js
+
+
+
+
+
+/**
+ * A room stores confirmedState, who is a member, and when
+ * the last update was
+ */
+const room_createRoom = (subReducer) => {
+    const coreReducer = combineReducers({
+        members: members_members,
+        lastUpdatedAt: lastUpdatedAt,
+        confirmed: createConfirmed(subReducer)
+    });
+    return (state, action) => {
+        switch (action.type) {
+            case CLOSE_ROOM:
+                return undefined;
+            default:
+                return coreReducer(state, action);
+        }
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/set.js
+/**
+ * Set a value at path
+ */
+const set = (obj, path, value) => {
+    if (!path)
+        return value;
+    if (!Array.isArray(path))
+        path = path.split('.');
+    if (path.length === 0)
+        return value;
+    const [key, ...remainingKeys] = path;
+    const oldValue = obj[key] || {};
+    const newValue = set(oldValue, remainingKeys, value);
+    if (Array.isArray(obj)) {
+        const newArr = [...obj];
+        newArr[Number(key)] = newValue;
+        return newArr;
+    }
+    else {
+        return Object.assign({}, obj, { [key]: newValue });
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/del.js
+
+/**
+ * remove a key from a collection
+ */
+const del = (obj, path = '') => {
+    return set(obj, path, undefined);
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/utils/map.js
+
+/*
+ * This does the same thing as Array.map, but for objects
+ * If used with an array, the indexes will be treated as strings
+ */
+const map = (obj, func) => {
+    const results = {};
+    forEach(obj, (value, key) => results[key] = func(value, key));
+    return results;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-core/dist/es6/index.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/middleware/send-to-server.js
+/**
+ * Send locally dispatched actions to the server for confirmation
+ */
+const createSendToServer = (send) => {
+    return () => (next) => (action) => {
+        if (!action.$confirmed && !action.$userId)
+            send(action);
+        next(action);
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/middleware/add-action-id.js
+/**
+ * Create an incrementing actionId
+ */
+let nextActionId = 1;
+const addActionId = () => (next) => (action) => {
+    if (!action.$actionId) {
+        action.$actionId = nextActionId++;
+    }
+    return next(action);
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/middleware/inject-metadata.js
+
+/**
+ * userId and timeMs are added to create consistency between
+ * optimistic and confirmed actions
+ * todo: this is too complicated, and I don't understand it any more
+ */
+let inject_metadata_nextActionId = 1;
+const injectMetadata = (store) => {
+    return (next) => (action) => {
+        // sanity checks
+        const roomId = action.$roomId;
+        const state = store.getState();
+        if (!roomId || !state.rooms[roomId])
+            return next(action);
+        // fill in missing data
+        if (!action.$actionId)
+            action.$actionId = inject_metadata_nextActionId++;
+        if (!action.$timeMs)
+            action.$timeMs = new Date().getTime();
+        if (!action.$source)
+            action.$source = SELF;
+        // if there is no $userId, then this action was created by the current user
+        if (action.$userId) {
+            const room = state.rooms[roomId];
+            action.$user = room.members[action.$userId] || action.$user;
+        }
+        else if (state.me) {
+            action.$userId = state.me.userId;
+            action.$user = state.me;
+        }
+        return next(action);
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/tough-socket/try-to-connect.js
+/**
+ * Try to create a connection to the server
+ */
+const tryToConnect = (settings) => {
+    const { url, credential, backoffMs } = settings;
+    if (!url)
+        return Promise.reject('NO_URL');
+    return new Promise((resolve) => {
+        const onopen = (socket) => {
+            delete socket.onclose;
+            delete socket.onopen;
+            resolve(socket);
+        };
+        const connect = (retryCount = 0) => {
+            const delay = retryCount * backoffMs;
+            setTimeout(() => {
+                const socket = new WebSocket(url, credential);
+                socket.onclose = () => connect(retryCount + 1);
+                socket.onopen = () => onopen(socket);
+            }, delay);
+        };
+        connect();
+    });
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/tough-socket/tough-socket.js
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+/**
+ * Create an always retrying socket connection
+ * Handle incoming messages with onMessage
+ */
+const createToughSocket = (settings) => {
+    let socket;
+    const self = {
+        send: (str) => {
+            if (!socket || socket.readyState !== socket.OPEN)
+                return;
+            socket.send(str);
+        }
+    };
+    const connect = () => __awaiter(this, void 0, void 0, function* () {
+        socket = yield tryToConnect(settings);
+        if (self.onmessage)
+            socket.onmessage = self.onmessage;
+        socket.onclose = () => setTimeout(connect, 3000);
+    });
+    connect(); // tslint:disable-line
+    return self;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/tough-socket/index.js
+
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/to-dispatchers.js
+
+/**
+ * turn some action creators into handy dandy action dispatchers
+ */
+const toDispatchers = (dispatch, creators) => {
+    return map(creators, creator => {
+        return (...params) => dispatch(creator(...params));
+    });
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/room.js
+
+
+/**
+ * Create a room interface to make some code more convinient
+ */
+const createCreateRoom = (store, actionCreators = {}) => {
+    return (roomId) => {
+        const getRoom = () => {
+            const state = store.getState();
+            return state.rooms[roomId];
+        };
+        const dispatch = (action) => {
+            store.dispatch(Object.assign({}, action, { $roomId: roomId }));
+        };
+        const getState = () => get(getRoom(), 'optimistic');
+        const getConfirmedState = () => get(getRoom(), 'confirmed');
+        const actionDispatchers = toDispatchers(dispatch, actionCreators);
+        dispatch({ type: JOIN_ROOM });
+        // subscribe to events that target this room
+        const subscription = createSubscription();
+        store.subscribe((state, action) => {
+            if (action && action.$roomId === roomId) {
+                subscription.publish(state.rooms[roomId].optimistic, action);
+            }
+        });
+        return Object.assign({}, actionDispatchers, { dispatch,
+            getState,
+            getConfirmedState, subscribe: subscription.subscribe });
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/default-client-settings.js
+
+/**
+ * Default settings
+ */
+const defaultClientSettings = {
+    reducer: patcher,
+    middleware: [],
+    url: undefined,
+    stunServers: ['stun:stun.jiber.io'],
+    credential: undefined,
+    initialState: undefined,
+    backoffMs: 5000,
+    actionCreators: patcherActionCreators,
+    maxPeers: 10
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/reducers/client-room/pending-actions.js
+
+/**
+ * Remove actions that have the same userId, and a lesser or equal actionId
+ * Actions with no $user are assumed to belong to the currently logged in user
+ */
+const pruneOld = (pendingActions, action) => {
+    return pendingActions.filter(pendingAction => {
+        if (!pendingAction.$userId)
+            return false;
+        if (pendingAction.$userId !== action.$userId)
+            return true;
+        return (pendingAction.$actionId || 0) > (action.$actionId || 0);
+    });
+};
+/**
+ * add a new pending action if it is newer than the last confirmed action
+ * received for this user
+ */
+const addNew = (pendingActions, action) => {
+    // ignore JOIN_ROOM and LEAVE_ROOM actions, rejoin-rooms.ts handles that
+    if (action.type === JOIN_ROOM || action.type === LEAVE_ROOM) {
+        return pendingActions;
+    }
+    // if the user is not set, then we made this action but are not logged in yet
+    if (!action.$user)
+        return [...pendingActions, action];
+    // only accept optimistic actions that are newer than the confirmed actions
+    if ((action.$actionId || 0) > (action.$user.actionId || 0)) {
+        return [...pendingActions, action];
+    }
+    else {
+        return pendingActions;
+    }
+};
+/**
+ * Keep optimistic actions that have not been confirmed by the server yet
+ */
+const pending_actions_pendingActions = (state = [], action) => {
+    switch (action.type) {
+        // Remove all pending actions
+        case CONFIRMED_STATE:
+            return [];
+        // Remove pending actions belonging to userId if they leave the room
+        case LEAVE_ROOM:
+            return state.filter(pendingAction => pendingAction.$userId !== action.$userId);
+        // Add or remove specific pending actions
+        default:
+            return action.$confirmed ? pruneOld(state, action) : addNew(state, action);
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/reducers/client-room/optimistic.js
+
+/**
+ * Use the current room state along with the action to calculate
+ * a state that will be correct, assuming the server ends up confirming
+ * all of the optimistic actions
+ */
+const createOptimistic = (subReducer) => {
+    return (roomState, action) => {
+        const state = roomState.optimistic;
+        if (action.type === CONFIRMED_STATE) {
+            const { pendingActions } = roomState;
+            return pendingActions.reduce(subReducer, roomState.confirmed);
+        }
+        const curActionId = get(action, '$user.actionId') || 0;
+        const actionId = action.$actionId || 0;
+        if (action.$confirmed) {
+            const { pendingActions, confirmed } = roomState;
+            return pendingActions.reduce(subReducer, confirmed);
+        }
+        else if (actionId > curActionId) {
+            return subReducer(state, action);
+        }
+        else {
+            return state;
+        }
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/reducers/client-room/client-room.js
+
+
+
+const defaultState = {
+    lastUpdatedAt: 0,
+    members: {},
+    confirmed: undefined,
+    optimistic: undefined,
+    pendingActions: []
+};
+/**
+ * Calculates a confirmed state,
+ * then uses the confirmed state to calculate an optimistic state
+ */
+const createClientRoom = (subReducer) => {
+    const roomReducer = room_createRoom(subReducer);
+    const optimistic = createOptimistic(subReducer);
+    return (state = defaultState, action) => {
+        const newState = roomReducer(state, action);
+        newState.pendingActions = pending_actions_pendingActions(newState.pendingActions, action);
+        newState.optimistic = optimistic(newState, action);
+        return newState;
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/reducers/me.js
+
+/**
+ * Keep track of the currently logged in user
+ */
+const me_me = (state = { userId: '$timeMsemp' }, action) => {
+    switch (action.type) {
+        case LOGIN_RESULT:
+            return action.user;
+        default:
+            return state;
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/client-reducer.js
+
+
+
+/**
+ * Top level reducer for the client
+ */
+const createClientReducer = (subReducer) => {
+    const room = createClientRoom(subReducer);
+    const rooms = createDictionary(room, '$roomId');
+    const clientReducer = combineReducers({ rooms, me: me_me });
+    return clientReducer;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/channel.js
+/**
+ * Typescript doesn't seem to include RTCDataChannel by default
+ * so I'm using 'any' types in a few places
+ * 'pc' is short for peerConnection
+ */
+const createChannel = (pc, isInitiator) => {
+    let channel;
+    const send = (action) => {
+        if (channel && channel.readyState === 'open') {
+            const smallerAction = Object.assign({}, action, { $user: undefined, $userId: undefined, $timeMs: undefined });
+            channel.send(JSON.stringify(smallerAction));
+        }
+    };
+    const self = {
+        send
+    };
+    const setupChannel = (channel) => {
+        channel.onmessage = (message) => {
+            if (self.onmessage)
+                self.onmessage(message);
+        };
+    };
+    if (isInitiator) {
+        const channelConfig = { ordered: false, maxRetransmits: 0 };
+        channel = pc.createDataChannel('data', channelConfig);
+        setupChannel(channel);
+    }
+    else {
+        pc.ondatachannel = (event) => {
+            channel = event.channel;
+            setupChannel(channel);
+        };
+    }
+    return self;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/should-peer.js
+
+/**
+ * Is this action relavent for this particular peer?
+ */
+const shouldPeer = (state, peerUserId, action) => {
+    if (!action.$roomId)
+        return false;
+    if (action.$source !== SELF)
+        return false;
+    const room = state.rooms[action.$roomId];
+    if (!room.members[peerUserId])
+        return false;
+    return true;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/utils/error-handler.js
+const errorHandler = (e) => console.log(e);
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/negotiator.js
+var negotiator___awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+/**
+ * Handle the initial negotiation needed to establish the peer connection
+ */
+const createNegotiator = (dispatch, pc, peerUserId, offer) => {
+    const sendOffer = () => negotiator___awaiter(this, void 0, void 0, function* () {
+        const offer = yield pc.createOffer();
+        yield pc.setLocalDescription(offer);
+        dispatch({ type: WEBRTC_OFFER, offer, peerUserId });
+    });
+    const sendAnswer = (pc) => negotiator___awaiter(this, void 0, void 0, function* () {
+        const answer = yield pc.createAnswer();
+        yield pc.setLocalDescription(answer);
+        dispatch({ type: WEBRTC_ANSWER, answer, peerUserId });
+    });
+    const sendCandidate = (candidate) => {
+        dispatch({ type: WEBRTC_CANDIDATE, candidate, peerUserId });
+    };
+    const acceptOffer = (offer) => negotiator___awaiter(this, void 0, void 0, function* () {
+        yield pc.setRemoteDescription(offer);
+        return sendAnswer(pc);
+    });
+    const onAction = (action) => negotiator___awaiter(this, void 0, void 0, function* () {
+        if (!action.$confirmed)
+            return;
+        if (action.$userId !== peerUserId)
+            return;
+        switch (action.type) {
+            case WEBRTC_ANSWER:
+                return pc.setRemoteDescription(action.answer);
+            case WEBRTC_CANDIDATE:
+                return pc.addIceCandidate(action.candidate);
+        }
+    });
+    pc.onicecandidate = (event) => {
+        if (!event.candidate)
+            return;
+        sendCandidate(event.candidate);
+    };
+    if (offer) {
+        acceptOffer(offer).catch(errorHandler);
+    }
+    else {
+        sendOffer().catch(errorHandler);
+    }
+    return {
+        onAction
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/on-peer-message.js
+
+const onPeerMessage = (store, peerUserId, event) => {
+    const action = JSON.parse(event.data);
+    const roomId = action.$roomId;
+    if (!roomId)
+        return;
+    // make sure the user is a member of this room
+    const room = store.getState().rooms[roomId];
+    const members = room.members;
+    const user = members[peerUserId];
+    if (!user)
+        return;
+    // add some metadata to the action
+    action.$timeMs = new Date().getTime();
+    action.$userId = peerUserId;
+    action.$source = PEER;
+    action.$user = user;
+    // optimistic
+    store.dispatch(action);
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/peer.js
+
+
+
+
+
+const createPC = (stunServers) => {
+    const config = {
+        iceServers: stunServers.map(url => ({ urls: url }))
+    };
+    return new RTCPeerConnection(config);
+};
+const createPeer = (peerUserId, store, settings, offer) => {
+    // pc is short for peerConnection
+    const pc = createPC(settings.stunServers);
+    const channel = createChannel(pc, !offer);
+    const negotiator = createNegotiator(store.dispatch, pc, peerUserId, offer);
+    channel.onmessage = (message) => {
+        onPeerMessage(store, peerUserId, message);
+    };
+    const unsubscribe = store.subscribe((action) => {
+        negotiator.onAction(action).catch(errorHandler);
+        const state = store.getState();
+        if (shouldPeer(state, peerUserId, action))
+            channel.send(action);
+    });
+    const close = () => {
+        unsubscribe();
+        pc.close();
+    };
+    return {
+        peerUserId,
+        close
+    };
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/prefix-fix.js
+/**
+ * standardize browser prefixes
+ */
+const prefixFix = () => {
+    const w = window;
+    const fields = [
+        'RTCPeerConnection',
+        'RTCIceCandidate',
+        'RTCSessionDescription'
+    ];
+    fields.forEach(field => {
+        w[field] = w[field] || w[`moz${field}`] || w[`webkit${field}`];
+    });
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/peer-manager.js
+
+
+
+/**
+ * When we join a room, existing members send us offers (WEBRTC_OFFER)
+ * When another user joins, we send an offer (we are now an existing member)
+ */
+const createPeerManager = (store, settings) => {
+    // standardize browser prefixes
+    prefixFix();
+    //
+    const connections = {};
+    // create a list of all userIds that you should be connected to
+    const toAllMembers = (state) => {
+        return reduce(state.rooms, (members, room) => {
+            return Object.assign(members, room.members);
+        }, {});
+    };
+    // remove a connection that we no longer want
+    const remove = (userId) => {
+        const connection = connections[userId];
+        if (!connection)
+            return;
+        connection.close();
+        delete connections[userId];
+    };
+    // remove connections we no longer want
+    const removeUnusedConnections = () => {
+        const allMembers = toAllMembers(store.getState());
+        forEach(connections, connection => {
+            if (!allMembers[connection.peerUserId])
+                remove(connection.peerUserId);
+        });
+    };
+    // add a new connection
+    const addConnection = (userId, offer) => {
+        if (connections[userId])
+            return;
+        if (Object.keys(connections).length >= settings.maxPeers)
+            return;
+        connections[userId] = createPeer(userId, store, settings, offer);
+    };
+    // add and remove connections as needed
+    store.subscribe((action) => {
+        if (!action.$confirmed)
+            return;
+        switch (action.type) {
+            case LEAVE_ROOM:
+                return removeUnusedConnections();
+            case JOIN_ROOM:
+                if (!action.$userId)
+                    return;
+                if (action.$userId === store.getState().me.userId)
+                    return;
+                return addConnection(action.$userId);
+            case WEBRTC_OFFER:
+                if (!action.$userId)
+                    return;
+                return addConnection(action.$userId, action.offer);
+        }
+    });
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/webrtc/index.js
+
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/action-handler.js
+
+/**
+ * Trigger special behaviors for certain actions from the server
+ */
+const actionHandler = (sendAction, getState, action) => {
+    switch (action.type) {
+        // rejoin rooms
+        case LOGIN_RESULT: {
+            const state = getState();
+            forEach(state.rooms, (_room, roomId) => {
+                sendAction({ type: JOIN_ROOM, $roomId: roomId });
+            });
+            return;
+        }
+        // resend pending actions
+        case CONFIRMED_STATE: {
+            if (!action.$roomId)
+                return;
+            const state = getState();
+            const room = state.rooms[action.$roomId];
+            if (room)
+                room.pendingActions.forEach(sendAction);
+            return;
+        }
+    }
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/client-store.js
+
+
+
+
+
+
+
+
+
+
+/**
+ * When creating a client store, add middleware to send actions to the server
+ * and peers
+ */
+const createClientStore = (optionInput = {}) => {
+    const options = Object.assign({}, defaultClientSettings, optionInput);
+    const clientReducer = createClientReducer(options.reducer);
+    const toughSocket = createToughSocket(options);
+    const sendAction = (action) => toughSocket.send(JSON.stringify(action));
+    const sendToServer = createSendToServer(sendAction);
+    const middleware = [
+        ...options.middleware,
+        addActionId,
+        sendToServer,
+        injectMetadata
+    ];
+    const store = createStore(clientReducer, options.initialState, middleware);
+    const createRoom = createCreateRoom(store, options.actionCreators);
+    const clientStore = Object.assign({}, store, { createRoom });
+    toughSocket.onmessage = (event) => {
+        const action = JSON.parse(event.data);
+        action.$confirmed = true;
+        action.$source = SERVER;
+        actionHandler(sendAction, store.getState, action);
+        store.dispatch(action);
+    };
+    createPeerManager(store, options);
+    return clientStore;
+};
+
+// CONCATENATED MODULE: ./node_modules/jiber-client/dist/es6/index.js
+
+
+
+// EXTERNAL MODULE: ../shared/reducer.js
+var shared_reducer = __webpack_require__(3);
+var reducer_default = /*#__PURE__*/__webpack_require__.n(shared_reducer);
+
+// CONCATENATED MODULE: ./src/store.js
+
+
+
+const store_store = createClientStore({ url: 'ws:\\localhost:3000', reducer: reducer_default.a });
+const store_room = store_store.createRoom('test');
+
+// EXTERNAL MODULE: ../shared/constants.js
+var constants = __webpack_require__(0);
+var constants_default = /*#__PURE__*/__webpack_require__.n(constants);
+
+// CONCATENATED MODULE: ./src/utils/is-logged-in.js
+const isLoggedIn = me => {
+  return me && me.provider;
+};
+// CONCATENATED MODULE: ./src/utils/router.js
+let hyper;
+
+const router_goto = path => {
+  window.history.pushState(undefined, `UpSense ${path}`, path);
+  if (hyper) {
+    hyper.setPath(path);
+  }
+};
+
+const init = _hyper => {
+  hyper = _hyper;
+  hyper.setPath(window.location.pathname || '/');
+  window.onpopstate = e => {
+    const path = e.pathname || window.location.pathname || '/';
+    hyper.setPath(path);
+  };
+};
+// CONCATENATED MODULE: ./src/actions/index.js
+
+
+
+
+
+const actions_actions = {
+  createPost: ({ title, description }) => state => {
+    if (!isLoggedIn(state.me)) return router_goto('/login');
+    const postId = title.replace(/\W/g, '-').toLowerCase();
+    store_room.dispatch({ type: constants["CREATE"], title, postId, description });
+    return Object.assign({}, state, { posts: store_room.getState(), path: '/' });
+  },
+
+  vote: postId => state => {
+    if (!isLoggedIn(state.me)) return router_goto('/login');
+    store_room.dispatch({ type: constants["VOTE"], postId });
+    return Object.assign({}, state, { posts: store_room.getState() });
+  },
+
+  addComment: ({ postId, text }) => state => {
+    if (!isLoggedIn(state.me)) return router_goto('/login');
+    store_room.dispatch({ type: constants["COMMENT"], postId, text });
+    return Object.assign({}, state, { posts: store_room.getState() });
+  },
+
+  updateData: serverState => state => {
+    const roomState = serverState.rooms['test'].confirmed; // todo: set roomName variable
+    return Object.assign({}, state, { me: serverState.me }, { posts: roomState });
+  },
+
+  sort: event => state => Object.assign({}, state, { sort: event.target.value }),
+
+  setPath: path => state => {
+    return Object.assign({}, state, { path });
+  }
+};
+
+
+// CONCATENATED MODULE: ./src/components/post-create.js
+ // eslint-disable-line no-unused-vars
+
+/* harmony default export */ var post_create = (({ createPost, goto }) => h(
+  'div',
+  { 'class': 'post-create' },
+  h(
+    'div',
+    { 'class': 'top' },
+    h(
+      'h2',
+      null,
+      'Create a Post'
+    ),
+    h(
+      'button',
+      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      'See All Posts'
+    )
+  ),
+  h(
+    'div',
+    { 'class': 'fake-field' },
+    h(
+      'div',
+      { 'class': 'title' },
+      'Title'
+    ),
+    h('input', { 'class': 'input', id: 'title-field', type: 'text', placeholder: 'Short, descriptive title' })
+  ),
+  h(
+    'div',
+    { 'class': 'fake-field' },
+    h(
+      'div',
+      { 'class': 'title' },
+      'Details'
+    ),
+    h('textarea', { 'class': 'input', id: 'description-field', placeholder: 'Any additional details...', rows: '3' })
+  ),
+  h(
+    'button',
+    { 'class': 'btn btn-text btn-primary create-post', onclick: () => createPost({
+        title: document.getElementById('title-field').value,
+        description: document.getElementById('description-field').value
+      }) },
+    'Create Post'
+  )
+));
+// CONCATENATED MODULE: ./src/components/post.js
+ // eslint-disable-line no-unused-vars
+
+/* harmony default export */ var components_post = (post => h(
+  'div',
+  { 'class': 'post' },
+  h(
+    'div',
+    { 'class': 'vote', onclick: () => post.vote(post.postId) },
+    h('div', { 'class': 'arrow-up' }),
+    post.total
+  ),
+  h(
+    'div',
+    { 'class': 'content', onclick: () => post.goto(`/posts/${post.postId}`) },
+    h(
+      'div',
+      { 'class': 'title' },
+      post.title
+    ),
+    h(
+      'div',
+      { 'class': 'description' },
+      post.description
+    )
+  ),
+  h(
+    'div',
+    { 'class': 'comments', onclick: () => post.goto(`/posts/${post.postId}`) },
+    h(
+      'svg',
+      { fill: '#ccc', height: '24', width: '24' },
+      h('path', { d: 'M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z' }),
+      h('path', { d: 'M0 0h24v24H0z', fill: 'none' })
+    ),
+    '\xA0',
+    post.comments.length
+  )
+));
+// CONCATENATED MODULE: ./src/components/post-list.js
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+ // eslint-disable-line no-unused-vars
+
+
+/* harmony default export */ var post_list = (({ posts, vote, goto }) => {
+  const postArr = Object.values(posts);
+  if (postArr.length > 0) {
+    return h(
+      'ul',
+      { 'class': 'post-list' },
+      postArr.map(post => h(
+        'li',
+        null,
+        h(components_post, _extends({}, post, { vote: vote, goto: goto }))
+      ))
+    );
+  } else {
+    return h(
+      'span',
+      null,
+      'No posts yet...'
+    );
+  }
+});
+// CONCATENATED MODULE: ./src/components/comment.js
+ // eslint-disable-line no-unused-vars
+
+/* harmony default export */ var components_comment = (({ user, text }) => h(
+  'div',
+  { 'class': 'comment' },
+  h(
+    'div',
+    { 'class': 'name' },
+    user.name || user.userId
+  ),
+  h(
+    'div',
+    { 'class': 'text' },
+    text
+  )
+));
+// CONCATENATED MODULE: ./src/components/post-inspect.js
+ // eslint-disable-line no-unused-vars
+
+
+/* harmony default export */ var post_inspect = (({ post, goto, vote, addComment, editPost }) => {
+  const output = h(
+    'div',
+    { 'class': 'post-inspect' },
+    h(
+      'button',
+      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      'Back to All Posts'
+    ),
+    h(
+      'div',
+      { 'class': 'top' },
+      h(
+        'div',
+        { 'class': 'vote', onclick: () => vote(post.postId) },
+        h('div', { 'class': 'arrow-up' }),
+        post.total
+      ),
+      h(
+        'div',
+        { 'class': 'title' },
+        post.title
+      )
+    ),
+    h(components_comment, { user: post.owner, text: post.description }),
+    post.comments.map(comment => h(components_comment, comment)),
+    h('input', { id: 'comment-box', type: 'text', placeholder: 'Add a comment...', onkeydown: e => {
+        if (e.keyCode === 13) {
+          const box = document.getElementById('comment-box');
+          const text = box.value;
+          box.value = '';
+          addComment({ postId: post.postId, text });
+        }
+      } })
+  );
+
+  return output;
+});
+// CONCATENATED MODULE: ./src/components/controls.js
+ // eslint-disable-line no-unused-vars
+
+
+
+/* harmony default export */ var controls = (({ goto, sort, me }) => h(
+  'div',
+  { 'class': 'controls' },
+  h(
+    'div',
+    { 'class': 'showing' },
+    'Showing \xA0',
+    h(
+      'select',
+      { onchange: sort },
+      h(
+        'option',
+        { value: constants_default.a.TRENDING },
+        'Trending'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.TOP },
+        'Top'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.NEW },
+        'New'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.PLANNED },
+        'Planned'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.IN_PROGRESS },
+        'In Progress'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.COMPLETE },
+        'Complete'
+      ),
+      h(
+        'option',
+        { value: constants_default.a.CLOSED },
+        'Closed'
+      )
+    )
+  ),
+  h(
+    'div',
+    { 'class': 'group' },
+    h(
+      'button',
+      { 'class': 'btn btn-primary', onclick: () => isLoggedIn(me) ? goto('/create') : goto('/login') },
+      h(
+        'svg',
+        { height: '24', width: '24', xmlns: 'http://www.w3.org/2000/svg' },
+        h('path', { d: 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' }),
+        h('path', { d: 'M0 0h24v24H0z', fill: 'none' })
+      )
+    )
+  )
+));
+// CONCATENATED MODULE: ./src/components/login.js
+ // eslint-disable-line no-unused-vars
+
+/* harmony default export */ var login = (() => h(
+  'div',
+  { 'class': 'login' },
+  h(
+    'h2',
+    null,
+    'Click a Site to Login'
+  ),
+  h(
+    'a',
+    { href: '/auth/twitter' },
+    h(
+      'svg',
+      { id: 'Logo_FIXED', 'data-name': 'Logo \u2014 FIXED', xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 400 400' },
+      h(
+        'defs',
+        null,
+        h(
+          'style',
+          null,
+          '.cls-1{fill:none;}.cls-2{fill:#1da1f2;}'
+        )
+      ),
+      h(
+        'title',
+        null,
+        'Twitter_Logo_Blue'
+      ),
+      h('rect', { 'class': 'cls-1', width: '400', height: '400' }),
+      h('path', { 'class': 'cls-2', d: 'M153.62,301.59c94.34,0,145.94-78.16,145.94-145.94,0-2.22,0-4.43-.15-6.63A104.36,104.36,0,0,0,325,122.47a102.38,102.38,0,0,1-29.46,8.07,51.47,51.47,0,0,0,22.55-28.37,102.79,102.79,0,0,1-32.57,12.45,51.34,51.34,0,0,0-87.41,46.78A145.62,145.62,0,0,1,92.4,107.81a51.33,51.33,0,0,0,15.88,68.47A50.91,50.91,0,0,1,85,169.86c0,.21,0,.43,0,.65a51.31,51.31,0,0,0,41.15,50.28,51.21,51.21,0,0,1-23.16.88,51.35,51.35,0,0,0,47.92,35.62,102.92,102.92,0,0,1-63.7,22A104.41,104.41,0,0,1,75,278.55a145.21,145.21,0,0,0,78.62,23' })
+    )
+  )
+));
+// CONCATENATED MODULE: ./src/components/view.js
+ // eslint-disable-line no-unused-vars
+
+
+
+
+
+
+/* harmony default export */ var view = (state => actions => {
+  if (state.path === '/') {
+    return h(
+      'div',
+      { 'class': 'container' },
+      h(
+        'h1',
+        null,
+        'UpSense'
+      ),
+      h(controls, { goto: actions.goto, me: state.me, sort: actions.sort }),
+      h(post_list, { goto: actions.goto, posts: state.posts, vote: actions.vote })
+    );
+  } else if (state.path === '/create') {
+    return h(
+      'div',
+      { 'class': 'container' },
+      h(
+        'h1',
+        null,
+        'UpSense'
+      ),
+      h(post_create, { goto: actions.goto, createPost: actions.createPost })
+    );
+  } else if (state.path === '/login') {
+    return h(
+      'div',
+      { 'class': 'container' },
+      h(
+        'h1',
+        null,
+        'UpSense'
+      ),
+      h(login, null)
+    );
+  } else if (state.path.indexOf('/posts/') === 0) {
+    const postId = state.path.substr(7);
+    return h(
+      'div',
+      { 'class': 'container' },
+      h(
+        'h1',
+        null,
+        'UpSense'
+      ),
+      h(post_inspect, { post: state.posts[postId], goto: actions.goto, vote: actions.vote, addComment: actions.addComment, editPost: actions.editPost })
+    );
+  }
+});
+// CONCATENATED MODULE: ./src/components/index.js
+
+/* harmony default export */ var components = (view);
+// CONCATENATED MODULE: ./src/index.js
+
+
+
+
+
+
+
+const src_state = {
+  me: undefined,
+  posts: store_room.getState(),
+  sort: constants["TRENDING"],
+  path: '/'
+};
+
+const src_hyper = app({ state: src_state, actions: actions_actions, view: components });
+init(src_hyper);
+
+store_store.subscribe(src_hyper.updateData);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const post = __webpack_require__(4)
+
+module.exports = (state = {}, action) => {
+  const id = action.postId
+  if (!id) return state
+  if (!action.$user.provider) return state
+
+  return Object.assign({}, state, {
+    [id]: post(state[id], action)
+  })
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const votes = __webpack_require__(5)
+const { CREATE, UPDATE, VOTE, COMMENT } = __webpack_require__(0)
+
+module.exports = (state = {votes: {}}, action) => {
+  switch (action.type) {
+    case CREATE: {
+      if (state.owner) return state
+      return {
+        postId: action.postId,
+        title: action.title,
+        description: action.description,
+        owner: {
+          userId: action.$userId,
+          name: action.$user.name
+        },
+        createdAt: action.$timeMs,
+        updatedAt: action.$timeMs,
+        status: action.status,
+        total: 0,
+        comments: []
+      }
+    }
+
+    case UPDATE: {
+      if (action.$userId !== state.owner.userId && !action.$user.admin) return state
+      return Object.assign({}, state, {
+        title: action.title,
+        description: action.description,
+        updatedAt: action.$timeMs,
+        status: action.status
+      })
+    }
+
+    case VOTE: {
+      const newVotes = votes(state.votes, action)
+      const ammounts = Object.values(newVotes)
+      return Object.assign({}, state, {
+        votes: newVotes,
+        total: ammounts.reduce((total, vote) => total + vote, 0)
+      })
+    }
+
+    case COMMENT: {
+      if (!action.text || action.text.length <= 4) return state
+      const comments = state.comments.slice()
+      comments.push({
+        user: {
+          userId: action.$userId,
+          name: action.$user.name
+        },
+        text: action.text
+      })
+      return Object.assign({}, state, {comments})
+    }
+
+    default: {
+      return state
+    }
+  }
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const { VOTE } = __webpack_require__(0)
+
+module.exports = (state = {}, action) => {
+  switch (action.type) {
+    case VOTE: {
+      // this adds their vote
+      if (!state[action.$userId]) {
+        return Object.assign({}, state, {[action.$userId]: 1})
+      // if they have already voted, this removes their vote
+      } else {
+        return Object.assign({}, state, {[action.$userId]: 0})
+      }
+    }
+    default:
+      return state
+  }
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ })
+/******/ ]);

@@ -25,9 +25,8 @@ export default {
   },
 
   updateData: (serverState) => (state) => {
-    console.log('updateData', serverState)
-    const roomState = serverState.rooms['test'] // todo: set roomName variable
-    Object.assign({}, state, {me: serverState.me}, roomState)
+    const roomState = serverState.rooms['test'].confirmed // todo: set roomName variable
+    return Object.assign({}, state, {me: serverState.me}, {posts: roomState})
   },
 
   sort: (event) => (state) => Object.assign(

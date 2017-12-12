@@ -29,6 +29,7 @@ module.exports = function webpackStuff (env) {
       rules: [{
         test: /\.js$/,
         loader: 'babel-loader',
+        exclude: /node_modules/,
         query: {
           presets: ['es2017'],
           plugins: []

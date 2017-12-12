@@ -1,25 +1,40 @@
-import store from '../store'
+import { room } from '../store'
 import { CREATE, VOTE, COMMENT } from '../../../shared/constants'
+import { isLoggedIn } from '../utils/is-logged-in'
+
+const goto = (path) => (state) => Object.assign({}, state, {path})
 
 export default {
   createPost: ({ title, description }) => (state) => {
+    if (!isLoggedIn(state.me)) return goto('/login')(state)
     const postId = title.replace(/\W/g, '-').toLowerCase()
-    store.dispatch({type: CREATE, title, postId, description})
-    return Object.assign({}, state, {posts: store.getState(), path: '/'})
+    room.dispatch({type: CREATE, title, postId, description})
+    return Object.assign({}, state, {posts: room.getState(), path: '/'})
   },
+
   vote: (postId) => (state) => {
-    store.dispatch({type: VOTE, postId})
-    return Object.assign({}, state, {posts: store.getState()})
+    if (!isLoggedIn(state.me)) return goto('/login')(state)
+    room.dispatch({type: VOTE, postId})
+    return Object.assign({}, state, {posts: room.getState()})
   },
+
   addComment: ({ postId, text }) => (state) => {
-    console.log('addComment', postId, text)
-    store.dispatch({type: COMMENT, postId, text})
-    return Object.assign({}, state, {posts: store.getState()})
+    if (!isLoggedIn(state.me)) return goto('/login')(state)
+    room.dispatch({type: COMMENT, postId, text})
+    return Object.assign({}, state, {posts: room.getState()})
   },
-  updateData: (posts) => (state) => {
-    const roomState = state.rooms['test'] // todo: set roomName variable somewhere
-    Object.assign({}, roomState, {me: state.me}, {posts})
+
+  updateData: (serverState) => (state) => {
+    console.log('updateData', serverState)
+    const roomState = serverState.rooms['test'] // todo: set roomName variable
+    Object.assign({}, state, {me: serverState.me}, roomState)
   },
-  sort: (event) => (state) => Object.assign({}, state, {sort: event.target.value}),
-  goto: (path) => (state) => Object.assign({}, state, {path})
+
+  sort: (event) => (state) => Object.assign(
+    {},
+    state,
+    {sort: event.target.value}
+  ),
+
+  goto
 }

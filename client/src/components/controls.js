@@ -1,9 +1,6 @@
 import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import constants from '../../../shared/constants'
-
-const isLoggedIn = (state) => {
-  return state.me && state.me.provider
-}
+import { isLoggedIn } from '../utils/is-logged-in'
 
 export default ({ goto, sort, me }) => (
   <div class='controls'>

@@ -9,7 +9,7 @@ const makeGuest = () => {
   }
 }
 
-module.exports = (app, sessionStore) => {
+module.exports = (app, server, sessionStore) => {
   // auth new logins
   const login = async (req) => {
     try {
@@ -26,6 +26,6 @@ module.exports = (app, sessionStore) => {
     }
   }
 
-  const store = jiber.createStore({ reducer, login, server: app })
+  const store = jiber.createStore({ reducer, login, server })
   store.start()
 }

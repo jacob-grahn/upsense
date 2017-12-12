@@ -2,6 +2,7 @@ const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
 const http = require('http')
+const { SESSION_SECRET } = require('./constants')
 const serveFiles = require('./serve-files')
 const setupTwitter = require('./setup-twitter')
 const setupPassport = require('./setup-passport')
@@ -11,7 +12,6 @@ const app = new Koa()
 const server = http.createServer(app.callback())
 
 // session
-const SESSION_SECRET = process.env.SESSION_SECRET
 app.keys = [SESSION_SECRET]
 const sessionStore = session(app)
 app.use(sessionStore)
@@ -22,7 +22,7 @@ app.use(bodyParser())
 // setup
 setupPassport(app)
 setupTwitter(app)
-setupJiber(app, sessionStore)
+setupJiber(app, server, sessionStore)
 serveFiles(app)
 
 // start server

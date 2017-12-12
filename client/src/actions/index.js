@@ -8,7 +8,9 @@ const actions = {
     if (!isLoggedIn(state.me)) return goto('/login')
     const postId = title.replace(/\W/g, '-').toLowerCase()
     room.dispatch({type: CREATE, title, postId, description})
-    return Object.assign({}, state, {posts: room.getState(), path: '/'})
+    room.dispatch({type: VOTE, postId})
+    setTimeout(() => goto('/'), 0)
+    return Object.assign({}, state, {posts: room.getState()})
   },
 
   vote: (postId) => (state) => {
@@ -36,6 +38,10 @@ const actions = {
 
   setPath: (path) => (state) => {
     return Object.assign({}, state, {path})
+  },
+
+  goto: (path) => () => {
+    goto(path)
   }
 }
 

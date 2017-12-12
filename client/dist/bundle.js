@@ -1466,7 +1466,9 @@ const actions_actions = {
     if (!isLoggedIn(state.me)) return router_goto('/login');
     const postId = title.replace(/\W/g, '-').toLowerCase();
     store_room.dispatch({ type: constants["CREATE"], title, postId, description });
-    return Object.assign({}, state, { posts: store_room.getState(), path: '/' });
+    store_room.dispatch({ type: constants["VOTE"], postId });
+    setTimeout(() => router_goto('/'), 0);
+    return Object.assign({}, state, { posts: store_room.getState() });
   },
 
   vote: postId => state => {
@@ -1490,6 +1492,10 @@ const actions_actions = {
 
   setPath: path => state => {
     return Object.assign({}, state, { path });
+  },
+
+  goto: path => () => {
+    router_goto(path);
   }
 };
 

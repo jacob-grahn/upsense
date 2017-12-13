@@ -1561,8 +1561,11 @@ var constants_default = /*#__PURE__*/__webpack_require__.n(constants);
       h('path', { d: 'M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z' }),
       h('path', { d: 'M0 0h24v24H0z', fill: 'none' })
     ),
-    '\xA0',
-    post.comments ? post.comments.length : 0
+    h(
+      'span',
+      { 'class': 'comment-count' },
+      post.comments ? post.comments.length : 0
+    )
   )
 ));
 // CONCATENATED MODULE: ./src/utils/sort-posts.js
@@ -2119,7 +2122,9 @@ const src_state = {
   path: '/'
 };
 
-const src_hyper = app({ state: src_state, actions: actions_actions, view: view });
+const container = document.getElementById('upsense');
+
+const src_hyper = app({ state: src_state, actions: actions_actions, view: view }, container);
 init(src_hyper);
 
 store_store.subscribe(src_hyper.updateData);

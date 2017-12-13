@@ -12,7 +12,9 @@ const state = {
   path: '/'
 }
 
-const hyper = app({ state, actions, view })
+const container = document.getElementById('upsense')
+
+const hyper = app({ state, actions, view }, container)
 initRouter(hyper)
 
 store.subscribe(hyper.updateData)

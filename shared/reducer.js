@@ -1,10 +1,11 @@
 const post = require('./post')
+const isLoggedIn = require('./is-logged-in')
 
 module.exports = (state = {}, action) => {
   // make sure there is a postId and the user is logged in
   const id = action.postId
   if (!id) return state
-  if (!action.$user.provider) return state
+  if (!isLoggedIn(action.$user)) return state
 
   // run the post reducer
   const postState = post(state[id], action)

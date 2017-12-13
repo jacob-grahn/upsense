@@ -6,7 +6,7 @@ const { PG_USER, PG_HOST, PG_DB, PG_PASSWORD, PG_PORT } = require('./env')
 
 const makeGuest = () => {
   return {
-    userId: 'guest' + Math.round(Math.random() * 100000),
+    userId: 'guest:' + Math.round(Math.random() * 100000),
     name: 'guest'
   }
 }

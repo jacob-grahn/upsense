@@ -14,7 +14,7 @@ export default ({ state, actions }) => {
   } else if (state.path.indexOf('/posts/') === 0) {
     const postId = state.path.substr(7)
     if (state.posts && state.posts[postId]) {
-      return <PostInspect post={state.posts[postId]} {...actions} />
+      return <PostInspect me={state.me} post={state.posts[postId]} {...actions} />
     }
   } else if (state.path.indexOf('/edit/') === 0) {
     const postId = state.path.substr(6)

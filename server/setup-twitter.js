@@ -1,7 +1,7 @@
 const TwitterStrategy = require('passport-twitter')
 const passport = require('koa-passport')
 const route = require('koa-route')
-const { TWITTER_KEY, TWITTER_SECRET } = require('./env')
+const { ADMIN_USER_ID, TWITTER_KEY, TWITTER_SECRET } = require('./env')
 
 module.exports = (app) => {
   const twitter = new TwitterStrategy({
@@ -11,10 +11,12 @@ module.exports = (app) => {
   },
   (token, tokenSecret, profile, cb) => {
     const account = {
-      userId: profile.id,
+      userId: `twitter:${profile.id}`,
       name: profile.displayName,
-      provider: profile.provider,
       avatar: profile.photos[0].value
+    }
+    if (account.userId === ADMIN_USER_ID) {
+      account.admin = true
     }
     cb(null, account)
   })

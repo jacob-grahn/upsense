@@ -1,12 +1,25 @@
 import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import Comment from './comment'
+import isAdmin from '../../../shared/is-admin'
 
-export default ({ post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
+export default ({ me, post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
+  const adminButtons = () => {
+    if (isAdmin(me)) {
+      return (
+        <span class='admin-buttons'>
+          <button class='btn btn-text' onclick={() => goto(`/edit/${post.postId}`)}>Edit</button>
+          <button class='btn btn-text' onclick={() => deletePost(post.postId)}>Delete</button>
+        </span>
+      )
+    } else {
+      return (<span />)
+    }
+  }
+
   return (
     <div class='post-inspect'>
       <button class='btn btn-text' onclick={() => goto('/')}>Back to All Posts</button>
-      &nbsp;<button class='btn btn-text' onclick={() => goto(`/edit/${post.postId}`)}>Edit</button>
-      &nbsp;<button class='btn btn-text' onclick={() => deletePost(post.postId)}>Delete</button>
+      {adminButtons()}
       <div class='top'>
         <div class='vote' onclick={() => vote(post.postId)}>
           <div class='arrow-up' />
@@ -20,6 +33,7 @@ export default ({ post, goto, vote, addComment, deleteComment, deletePost, editP
       {post.comments.map((comment, index) => {
         return <Comment
           {...comment}
+          admin={isAdmin(me)}
           deleteComment={() => deleteComment(post.postId, index)}
         />
       })}

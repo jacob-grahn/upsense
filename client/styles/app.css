@@ -1,14 +1,13 @@
+/* elements */
 body {
   margin-top: 135px;
   color: #666;
   font-family: -apple-system-body,BlinkMacSystemFont,SFUI,HelveticaNeue,Helvetica,Arial,sans-serif;
 }
-
 h1 {
   margin-bottom: 50px;
   color: #2c3e50;
 }
-
 h2 {
   font-weight: normal;
   padding: 0;
@@ -16,19 +15,18 @@ h2 {
   color: #444;
   font-size: 20px;
 }
-
 ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-
 ul li {
   padding: 0;
   margin: 0;
   margin-bottom: 32px;
 }
 
+/* container */
 .container {
   max-width: 700px;
   margin: 0 auto;
@@ -227,6 +225,9 @@ ul li {
   margin-top: 32px;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+.post-inspect .admin-buttons .btn {
+  margin-left: 8px;
 }
 
 /* current-user */

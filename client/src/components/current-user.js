@@ -1,7 +1,8 @@
 import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
+import isLoggedIn from '../../../shared/is-logged-in'
 
 export default ({ me }) => {
-  if (!me || !me.provider) {
+  if (!isLoggedIn(me)) {
     return (
       <div class='current-user'>
         <a href='/login'>Login</a>

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,14 +92,34 @@ module.exports = {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-__webpack_require__(2);
-module.exports = __webpack_require__(6);
+module.exports = (user) => {
+  return user && user.userId && user.userId.indexOf('guest:') !== 0
+}
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const isLoggedIn = __webpack_require__(1)
+
+module.exports = (user) => {
+  return isLoggedIn(user) && user.admin
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(4);
+module.exports = __webpack_require__(8);
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1421,7 +1441,7 @@ const createClientStore = (optionInput = {}) => {
 
 
 // EXTERNAL MODULE: ../shared/reducer.js
-var shared_reducer = __webpack_require__(3);
+var shared_reducer = __webpack_require__(5);
 var reducer_default = /*#__PURE__*/__webpack_require__.n(shared_reducer);
 
 // CONCATENATED MODULE: ./src/store.js
@@ -1628,7 +1648,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // CONCATENATED MODULE: ./src/components/comment.js
  // eslint-disable-line no-unused-vars
 
-/* harmony default export */ var components_comment = (({ user, text, deleteComment }) => h(
+/* harmony default export */ var components_comment = (({ admin, user, text, deleteComment }) => h(
   'div',
   { 'class': 'comment' },
   h(
@@ -1640,20 +1660,46 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     'div',
     { 'class': 'text' },
     text,
-    h(
+    admin ? h(
       'span',
       { 'class': 'btn-text', onclick: deleteComment },
       '[X]'
-    )
+    ) : ''
   )
 ));
+// EXTERNAL MODULE: ../shared/is-admin.js
+var is_admin = __webpack_require__(2);
+var is_admin_default = /*#__PURE__*/__webpack_require__.n(is_admin);
+
 // CONCATENATED MODULE: ./src/components/post-inspect.js
 var post_inspect__extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
  // eslint-disable-line no-unused-vars
 
 
-/* harmony default export */ var post_inspect = (({ post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
+
+/* harmony default export */ var post_inspect = (({ me, post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
+  const adminButtons = () => {
+    if (is_admin_default()(me)) {
+      return h(
+        'span',
+        { 'class': 'admin-buttons' },
+        h(
+          'button',
+          { 'class': 'btn btn-text', onclick: () => goto(`/edit/${post.postId}`) },
+          'Edit'
+        ),
+        h(
+          'button',
+          { 'class': 'btn btn-text', onclick: () => deletePost(post.postId) },
+          'Delete'
+        )
+      );
+    } else {
+      return h('span', null);
+    }
+  };
+
   return h(
     'div',
     { 'class': 'post-inspect' },
@@ -1662,18 +1708,7 @@ var post_inspect__extends = Object.assign || function (target) { for (var i = 1;
       { 'class': 'btn btn-text', onclick: () => goto('/') },
       'Back to All Posts'
     ),
-    '\xA0',
-    h(
-      'button',
-      { 'class': 'btn btn-text', onclick: () => goto(`/edit/${post.postId}`) },
-      'Edit'
-    ),
-    '\xA0',
-    h(
-      'button',
-      { 'class': 'btn btn-text', onclick: () => deletePost(post.postId) },
-      'Delete'
-    ),
+    adminButtons(),
     h(
       'div',
       { 'class': 'top' },
@@ -1692,6 +1727,7 @@ var post_inspect__extends = Object.assign || function (target) { for (var i = 1;
     h(components_comment, { user: post.owner, text: post.description, deleteComment: () => {} }),
     post.comments.map((comment, index) => {
       return h(components_comment, post_inspect__extends({}, comment, {
+        admin: is_admin_default()(me),
         deleteComment: () => deleteComment(post.postId, index)
       }));
     }),
@@ -1786,10 +1822,10 @@ var post_inspect__extends = Object.assign || function (target) { for (var i = 1;
     'Update Post'
   )
 ));
-// CONCATENATED MODULE: ./src/utils/is-logged-in.js
-const isLoggedIn = me => {
-  return me && me.provider;
-};
+// EXTERNAL MODULE: ../shared/is-logged-in.js
+var is_logged_in = __webpack_require__(1);
+var is_logged_in_default = /*#__PURE__*/__webpack_require__.n(is_logged_in);
+
 // CONCATENATED MODULE: ./src/components/controls.js
  // eslint-disable-line no-unused-vars
 
@@ -1852,7 +1888,7 @@ const isLoggedIn = me => {
     { 'class': 'group' },
     h(
       'button',
-      { 'class': 'btn btn-primary', onclick: () => isLoggedIn(me) ? goto('/create') : goto('/login') },
+      { 'class': 'btn btn-primary', onclick: () => is_logged_in_default()(me) ? goto('/create') : goto('/login') },
       h(
         'svg',
         { height: '24', width: '24', xmlns: 'http://www.w3.org/2000/svg' },
@@ -1917,7 +1953,7 @@ var page__extends = Object.assign || function (target) { for (var i = 1; i < arg
   } else if (state.path.indexOf('/posts/') === 0) {
     const postId = state.path.substr(7);
     if (state.posts && state.posts[postId]) {
-      return h(post_inspect, page__extends({ post: state.posts[postId] }, actions));
+      return h(post_inspect, page__extends({ me: state.me, post: state.posts[postId] }, actions));
     }
   } else if (state.path.indexOf('/edit/') === 0) {
     const postId = state.path.substr(6);
@@ -1937,8 +1973,9 @@ var page__extends = Object.assign || function (target) { for (var i = 1; i < arg
 // CONCATENATED MODULE: ./src/components/current-user.js
  // eslint-disable-line no-unused-vars
 
+
 /* harmony default export */ var current_user = (({ me }) => {
-  if (!me || !me.provider) {
+  if (!is_logged_in_default()(me)) {
     return h(
       'div',
       { 'class': 'current-user' },
@@ -1987,6 +2024,7 @@ const init = _hyper => {
 
 
 
+
 const metaActions = {
   createPost: ({ title, description }) => {
     const postId = title.replace(/\W/g, '-').toLowerCase();
@@ -1996,29 +2034,44 @@ const metaActions = {
   },
 
   deleteComment: (postId, index) => {
-    store_room.dispatch({ type: constants["DELETE_COMMENT"], postId, index });
+    const state = store_store.getState();
+    if (is_admin_default()(state.me)) {
+      store_room.dispatch({ type: constants["DELETE_COMMENT"], postId, index });
+    }
   },
 
   deletePost: postId => {
-    store_room.dispatch({ type: constants["DELETE_POST"], postId });
-    router_goto('/');
+    const state = store_store.getState();
+    if (is_admin_default()(state.me)) {
+      store_room.dispatch({ type: constants["DELETE_POST"], postId });
+      router_goto('/');
+    }
   },
 
   updatePost: ({ postId, title, description, status }) => {
-    store_room.dispatch({ type: constants["UPDATE"], postId, title, description, status });
-    router_goto('/');
+    const state = store_store.getState();
+    if (is_admin_default()(state.me)) {
+      store_room.dispatch({ type: constants["UPDATE"], postId, title, description, status });
+      router_goto('/');
+    }
   },
 
   vote: postId => {
     const state = store_store.getState();
-    if (!isLoggedIn(state.me)) return router_goto('/login');
-    store_room.dispatch({ type: constants["VOTE"], postId });
+    if (is_logged_in_default()(state.me)) {
+      store_room.dispatch({ type: constants["VOTE"], postId });
+    } else {
+      router_goto('/login');
+    }
   },
 
   addComment: ({ postId, text }) => {
     const state = store_store.getState();
-    if (!isLoggedIn(state.me)) return router_goto('/login');
-    store_room.dispatch({ type: constants["COMMENT"], postId, text });
+    if (is_logged_in_default()(state.me)) {
+      store_room.dispatch({ type: constants["COMMENT"], postId, text });
+    } else {
+      return router_goto('/login');
+    }
   },
 
   goto: router_goto
@@ -2064,16 +2117,17 @@ init(src_hyper);
 store_store.subscribe(src_hyper.updateData);
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const post = __webpack_require__(4)
+const post = __webpack_require__(6)
+const isLoggedIn = __webpack_require__(1)
 
 module.exports = (state = {}, action) => {
   // make sure there is a postId and the user is logged in
   const id = action.postId
   if (!id) return state
-  if (!action.$user.provider) return state
+  if (!isLoggedIn(action.$user)) return state
 
   // run the post reducer
   const postState = post(state[id], action)
@@ -2093,10 +2147,10 @@ module.exports = (state = {}, action) => {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const votes = __webpack_require__(5)
+const votes = __webpack_require__(7)
 const {
   COMMENT,
   CREATE,
@@ -2106,6 +2160,7 @@ const {
   VOTE,
   OPEN
 } = __webpack_require__(0)
+const isAdmin = __webpack_require__(2)
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -2128,7 +2183,7 @@ module.exports = (state = {votes: {}}, action) => {
     }
 
     case UPDATE: {
-      if (action.$userId !== state.owner.userId && !action.$user.admin) return state
+      if (!isAdmin(action.$user)) return state
       return Object.assign({}, state, {
         title: action.title,
         description: action.description,
@@ -2160,12 +2215,14 @@ module.exports = (state = {votes: {}}, action) => {
     }
 
     case DELETE_COMMENT: {
+      if (!isAdmin(action.$user)) return state
       const comments = state.comments.slice()
       comments.splice(action.index, 1)
       return Object.assign({}, state, {comments})
     }
 
     case DELETE_POST: {
+      if (!isAdmin(action.$user)) return state
       return undefined
     }
 
@@ -2177,7 +2234,7 @@ module.exports = (state = {votes: {}}, action) => {
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const { VOTE } = __webpack_require__(0)
@@ -2200,7 +2257,7 @@ module.exports = (state = {}, action) => {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

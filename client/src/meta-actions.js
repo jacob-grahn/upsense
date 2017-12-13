@@ -3,7 +3,8 @@
 
 import { room, store } from './store'
 import { COMMENT, CREATE, DELETE_COMMENT, DELETE_POST, UPDATE, VOTE } from '../../shared/constants'
-import { isLoggedIn } from './utils/is-logged-in'
+import isLoggedIn from '../../shared/is-logged-in'
+import isAdmin from '../../shared/is-admin'
 import { goto } from './utils/router'
 
 export const metaActions = {
@@ -15,29 +16,44 @@ export const metaActions = {
   },
 
   deleteComment: (postId, index) => {
-    room.dispatch({ type: DELETE_COMMENT, postId, index })
+    const state = store.getState()
+    if (isAdmin(state.me)) {
+      room.dispatch({ type: DELETE_COMMENT, postId, index })
+    }
   },
 
   deletePost: (postId) => {
-    room.dispatch({ type: DELETE_POST, postId })
-    goto('/')
+    const state = store.getState()
+    if (isAdmin(state.me)) {
+      room.dispatch({ type: DELETE_POST, postId })
+      goto('/')
+    }
   },
 
   updatePost: ({ postId, title, description, status }) => {
-    room.dispatch({ type: UPDATE, postId, title, description, status })
-    goto('/')
+    const state = store.getState()
+    if (isAdmin(state.me)) {
+      room.dispatch({ type: UPDATE, postId, title, description, status })
+      goto('/')
+    }
   },
 
   vote: (postId) => {
     const state = store.getState()
-    if (!isLoggedIn(state.me)) return goto('/login')
-    room.dispatch({ type: VOTE, postId })
+    if (isLoggedIn(state.me)) {
+      room.dispatch({ type: VOTE, postId })
+    } else {
+      goto('/login')
+    }
   },
 
   addComment: ({ postId, text }) => {
     const state = store.getState()
-    if (!isLoggedIn(state.me)) return goto('/login')
-    room.dispatch({ type: COMMENT, postId, text })
+    if (isLoggedIn(state.me)) {
+      room.dispatch({ type: COMMENT, postId, text })
+    } else {
+      return goto('/login')
+    }
   },
 
   goto

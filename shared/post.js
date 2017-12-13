@@ -8,6 +8,7 @@ const {
   VOTE,
   OPEN
 } = require('./constants')
+const isAdmin = require('./is-admin')
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -30,7 +31,7 @@ module.exports = (state = {votes: {}}, action) => {
     }
 
     case UPDATE: {
-      if (action.$userId !== state.owner.userId && !action.$user.admin) return state
+      if (!isAdmin(action.$user)) return state
       return Object.assign({}, state, {
         title: action.title,
         description: action.description,
@@ -62,12 +63,14 @@ module.exports = (state = {votes: {}}, action) => {
     }
 
     case DELETE_COMMENT: {
+      if (!isAdmin(action.$user)) return state
       const comments = state.comments.slice()
       comments.splice(action.index, 1)
       return Object.assign({}, state, {comments})
     }
 
     case DELETE_POST: {
+      if (!isAdmin(action.$user)) return state
       return undefined
     }
 

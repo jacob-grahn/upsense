@@ -1654,7 +1654,7 @@ var post_inspect__extends = Object.assign || function (target) { for (var i = 1;
 
 
 /* harmony default export */ var post_inspect = (({ post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
-  const output = h(
+  return h(
     'div',
     { 'class': 'post-inspect' },
     h(
@@ -1704,8 +1704,6 @@ var post_inspect__extends = Object.assign || function (target) { for (var i = 1;
         }
       } })
   );
-
-  return output;
 });
 // CONCATENATED MODULE: ./src/components/post-update.js
  // eslint-disable-line no-unused-vars

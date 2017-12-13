@@ -35,6 +35,7 @@ ul li {
   position: relative;
 }
 
+/* buttons */
 .btn {
   background-color: white;
   border-radius: 5px;
@@ -47,19 +48,15 @@ ul li {
   cursor: pointer;
   text-transform: uppercase;
 }
-
 .btn-text {
   cursor: pointer;
 }
-
 .btn-text:hover {
   text-decoration: underline;
 }
-
 .btn:hover {
   border: 1px solid #aaa;
 }
-
 .btn-primary {
   background-color: #525DF9;
   min-width: 42px;
@@ -68,79 +65,69 @@ ul li {
   fill: white;
   color: white;
 }
-
 .btn-primary:hover {
   background-color: darkblue;
   border: none;
 }
-
 .btn-text {
   padding: 0 12px;
 }
 
+/* main controls */
 .controls {
   height: 42px;
   display: flex;
   font-size: 16px;
   margin-bottom: 32px;
 }
-
 .controls .group {
   margin-left: auto;
 }
-
 .controls .showing {
   margin-top: auto;
   margin-bottom: auto;
 }
 
+/* post-create */
 .post-create .top {
   display: flex;
   padding-bottom: 16px;
 }
-
 .post-create .top h2 {
   margin-top: auto;
   margin-bottom: auto;
 }
-
 .post-create .top .btn {
   margin-left: auto;
   display: block;
 }
-
 .post-create .create-post {
   float: right;
 }
 
+/* fake-field */
 .fake-field {
   border: 1px solid #eee;
   border-radius: 5px;
   padding: 8px;
   margin-bottom: 10px;
 }
-
 .fake-field .input {
   border: none;
   user-select: none;
   width: 100%;
   font-size: 15px;
 }
-
 .fake-field .input:focus {
   outline: none;
 }
-
 .fake-field .title {
   font-size: 12px;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 
-.post {
-  display: flex;
-}
-
+/* post status */
 .status {
   font-weight: normal;
   color: #555;
@@ -151,6 +138,7 @@ ul li {
   margin-left: 16px;
 }
 
+/* vote box */
 .vote {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -161,18 +149,15 @@ ul li {
   font-size: 14px;
   margin-right: 16px;
 }
-
 .vote:hover {
   border: 1px solid #999;
   cursor: pointer;
 }
-
 .vote > * {
   margin-left: auto;
   margin-right: auto;
 }
-
-.arrow-up {
+.vote .arrow-up {
   width: 0;
   height: 0;
   border-left: 9px solid transparent;
@@ -182,53 +167,59 @@ ul li {
   -webkit-transition: all .1s ease-in-out;
   transition: all .1s ease-in-out;
 }
-
 .vote:hover .arrow-up {
   border-bottom: 9px solid rgba(35,35,35,.4);
 }
 
-.post .content {
-  flex-grow: 1;
+/* post */
+.post {
+  display: flex;
 }
-
+.post .vote {
+  flex: 0 0 auto;
+}
+.post .content {
+  flex: 1 1 auto;
+}
 .post .content:hover {
   cursor: pointer;
 }
-
+.post .comments {
+  flex: 0 0 auto;
+}
 .post .comments:hover {
   cursor: pointer;
 }
-
 .post .content .title {
   color: #333;
   font-weight: bold;
   margin-bottom: 8px;
 }
 
+/* post-inspect */
 .post-inspect .btn {
   margin-bottom: 32px;
 }
-
 .post-inspect .top {
   display: flex;
   margin-bottom: 16px;
 }
-
-.post-inspect .title {
+.post-inspect .top .vote {
+  flex: 0 0 auto;
+}
+.post-inspect .top .title {
   font-size: 20px;
   color: #333;
   margin: auto 0;
+  flex: 1 1 auto;
 }
-
 .post-inspect .comment {
   margin-left: 52px;
   padding-bottom: 16px;
 }
-
 .post-inspect .comment .name {
   color: darkblue;
 }
-
 .post-inspect input {
   margin-left: 52px;
   padding: 10px;
@@ -238,6 +229,7 @@ ul li {
   border: 1px solid #ccc;
 }
 
+/* current-user */
 .current-user {
   position: absolute;
   top: 10px;

@@ -2,7 +2,7 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import Comment from './comment'
 
 export default ({ post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
-  const output = (
+  return (
     <div class='post-inspect'>
       <button class='btn btn-text' onclick={() => goto('/')}>Back to All Posts</button>
       &nbsp;<button class='btn btn-text' onclick={() => goto(`/edit/${post.postId}`)}>Edit</button>
@@ -34,6 +34,4 @@ export default ({ post, goto, vote, addComment, deleteComment, deletePost, editP
       }} />
     </div>
   )
-
-  return output
 }

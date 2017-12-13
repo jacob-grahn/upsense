@@ -1,6 +1,8 @@
 const { get } = require('lodash')
 const reducer = require('../shared/reducer')
 const jiber = require('jiber-server')
+const postgres = require('jiber-db-postgres')
+const { PG_USER, PG_HOST, PG_DB, PG_PASSWORD, PG_PORT } = require('./env')
 
 const makeGuest = () => {
   return {
@@ -9,7 +11,7 @@ const makeGuest = () => {
   }
 }
 
-module.exports = (app, server, sessionStore) => {
+module.exports = async (app, server, sessionStore) => {
   // auth new logins
   const login = async (req) => {
     try {
@@ -26,6 +28,14 @@ module.exports = (app, server, sessionStore) => {
     }
   }
 
-  const store = jiber.createStore({ reducer, login, server })
+  const db = await postgres.createDb({
+    user: PG_USER,
+    host: PG_HOST,
+    database: PG_DB,
+    password: PG_PASSWORD,
+    port: PG_PORT
+  })
+
+  const store = jiber.createStore({ reducer, login, server, db })
   store.start()
 }

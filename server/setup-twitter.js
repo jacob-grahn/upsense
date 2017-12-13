@@ -1,7 +1,7 @@
 const TwitterStrategy = require('passport-twitter')
 const passport = require('koa-passport')
 const route = require('koa-route')
-const { TWITTER_KEY, TWITTER_SECRET } = require('./constants')
+const { TWITTER_KEY, TWITTER_SECRET } = require('./env')
 
 module.exports = (app) => {
   const twitter = new TwitterStrategy({

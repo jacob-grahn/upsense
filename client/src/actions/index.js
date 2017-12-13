@@ -18,7 +18,9 @@ const actions = {
 
   vote: (postId) => (state) => {
     if (!isLoggedIn(state.me)) return goto('/login')
-    room.dispatch({type: VOTE, postId})
+    setTimeout(() => {
+      room.dispatch({type: VOTE, postId})
+    })
   },
 
   addComment: ({ postId, text }) => (state) => {

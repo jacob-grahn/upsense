@@ -1,5 +1,13 @@
 const votes = require('./votes')
-const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = require('./constants')
+const {
+  COMMENT,
+  CREATE,
+  DELETE_COMMENT,
+  DELETE_POST,
+  UPDATE,
+  VOTE,
+  OPEN
+} = require('./constants')
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -51,6 +59,16 @@ module.exports = (state = {votes: {}}, action) => {
         text: action.text
       })
       return Object.assign({}, state, {comments})
+    }
+
+    case DELETE_COMMENT: {
+      const comments = state.comments.slice()
+      comments.splice(action.index, 1)
+      return Object.assign({}, state, {comments})
+    }
+
+    case DELETE_POST: {
+      return undefined
     }
 
     default: {

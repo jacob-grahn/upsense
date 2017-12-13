@@ -2,7 +2,8 @@ module.exports = {
   // actions
   COMMENT: 'COMMENT',
   CREATE: 'CREATE',
-  DELETE: 'DELETE',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  DELETE_POST: 'DELETE_POST',
   UPDATE: 'UPDATE',
   VOTE: 'VOTE',
 

@@ -71,7 +71,8 @@ module.exports = {
   // actions
   COMMENT: 'COMMENT',
   CREATE: 'CREATE',
-  DELETE: 'DELETE',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  DELETE_POST: 'DELETE_POST',
   UPDATE: 'UPDATE',
   VOTE: 'VOTE',
 
@@ -1627,7 +1628,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // CONCATENATED MODULE: ./src/components/comment.js
  // eslint-disable-line no-unused-vars
 
-/* harmony default export */ var components_comment = (({ user, text }) => h(
+/* harmony default export */ var components_comment = (({ user, text, deleteComment }) => h(
   'div',
   { 'class': 'comment' },
   h(
@@ -1638,14 +1639,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   h(
     'div',
     { 'class': 'text' },
-    text
+    text,
+    h(
+      'span',
+      { 'class': 'btn-text', onclick: deleteComment },
+      '[X]'
+    )
   )
 ));
 // CONCATENATED MODULE: ./src/components/post-inspect.js
+var post_inspect__extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
  // eslint-disable-line no-unused-vars
 
 
-/* harmony default export */ var post_inspect = (({ post, goto, vote, addComment, editPost }) => {
+/* harmony default export */ var post_inspect = (({ post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
   const output = h(
     'div',
     { 'class': 'post-inspect' },
@@ -1663,7 +1671,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     '\xA0',
     h(
       'button',
-      { 'class': 'btn btn-text', onclick: () => goto('/') },
+      { 'class': 'btn btn-text', onclick: () => deletePost(post.postId) },
       'Delete'
     ),
     h(
@@ -1681,8 +1689,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         post.title
       )
     ),
-    h(components_comment, { user: post.owner, text: post.description }),
-    post.comments.map(comment => h(components_comment, comment)),
+    h(components_comment, { user: post.owner, text: post.description, deleteComment: () => {} }),
+    post.comments.map((comment, index) => {
+      return h(components_comment, post_inspect__extends({}, comment, {
+        deleteComment: () => deleteComment(post.postId, index)
+      }));
+    }),
     h('input', { id: 'comment-box', type: 'text', placeholder: 'Add a comment...', onkeydown: e => {
         if (e.keyCode === 13) {
           const box = document.getElementById('comment-box');
@@ -1969,8 +1981,8 @@ const init = _hyper => {
   };
 };
 // CONCATENATED MODULE: ./src/meta-actions.js
-// these actions don't directly modify the state, but
-// they call functions in actions/index.js which do modify the state
+// these actions don't directly modify the state, but they directly
+// or indirectly call  functions in actions.js which do modify the state
 
 
 
@@ -1982,6 +1994,15 @@ const metaActions = {
     const postId = title.replace(/\W/g, '-').toLowerCase();
     store_room.dispatch({ type: constants["CREATE"], title, postId, description });
     store_room.dispatch({ type: constants["VOTE"], postId });
+    router_goto(`/posts/${postId}`);
+  },
+
+  deleteComment: (postId, index) => {
+    store_room.dispatch({ type: constants["DELETE_COMMENT"], postId, index });
+  },
+
+  deletePost: postId => {
+    store_room.dispatch({ type: constants["DELETE_POST"], postId });
     router_goto('/');
   },
 
@@ -2051,10 +2072,22 @@ store_store.subscribe(src_hyper.updateData);
 const post = __webpack_require__(4)
 
 module.exports = (state = {}, action) => {
+  // make sure there is a postId and the user is logged in
   const id = action.postId
   if (!id) return state
   if (!action.$user.provider) return state
 
+  // run the post reducer
+  const postState = post(state[id], action)
+
+  // if a post is deleted, remove it from the dictionary
+  if (!postState) {
+    const copy = Object.assign({}, state)
+    delete copy[id]
+    return copy
+  }
+
+  // return an updated dictionary with a pointer to the new post
   return Object.assign({}, state, {
     [id]: post(state[id], action)
   })
@@ -2066,7 +2099,15 @@ module.exports = (state = {}, action) => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const votes = __webpack_require__(5)
-const { CREATE, UPDATE, VOTE, COMMENT, OPEN } = __webpack_require__(0)
+const {
+  COMMENT,
+  CREATE,
+  DELETE_COMMENT,
+  DELETE_POST,
+  UPDATE,
+  VOTE,
+  OPEN
+} = __webpack_require__(0)
 
 module.exports = (state = {votes: {}}, action) => {
   switch (action.type) {
@@ -2118,6 +2159,16 @@ module.exports = (state = {votes: {}}, action) => {
         text: action.text
       })
       return Object.assign({}, state, {comments})
+    }
+
+    case DELETE_COMMENT: {
+      const comments = state.comments.slice()
+      comments.splice(action.index, 1)
+      return Object.assign({}, state, {comments})
+    }
+
+    case DELETE_POST: {
+      return undefined
     }
 
     default: {

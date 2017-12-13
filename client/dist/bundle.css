@@ -48,6 +48,14 @@ ul li {
   text-transform: uppercase;
 }
 
+.btn-text {
+  cursor: pointer;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+}
+
 .btn:hover {
   border: 1px solid #aaa;
 }

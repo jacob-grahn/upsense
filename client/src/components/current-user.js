@@ -5,13 +5,14 @@ export default ({ me }) => {
   if (!isLoggedIn(me)) {
     return (
       <div class='current-user'>
-        <a href='/login'>Login</a>
+        <a class='btn btn-inline' href='/login'>login</a>
       </div>
     )
   } else {
     return (
       <div class='current-user'>
-        <a href='/logout'>{me.name}</a>
+        {me.name}
+        <a class='btn btn-inline' href='/logout'>logout</a>
       </div>
     )
   }

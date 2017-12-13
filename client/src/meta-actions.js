@@ -10,9 +10,11 @@ import { goto } from './utils/router'
 export const metaActions = {
   createPost: ({ title, description }) => {
     const postId = title.replace(/\W/g, '-').toLowerCase()
-    room.dispatch({type: CREATE, title, postId, description})
-    room.dispatch({type: VOTE, postId})
-    goto(`/posts/${postId}`)
+    if (postId.length > 3) {
+      room.dispatch({type: CREATE, title, postId, description})
+      room.dispatch({type: VOTE, postId})
+      goto(`/posts/${postId}`)
+    }
   },
 
   deleteComment: (postId, index) => {

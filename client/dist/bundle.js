@@ -1662,8 +1662,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     text,
     admin ? h(
       'span',
-      { 'class': 'btn-text', onclick: deleteComment },
-      '[X]'
+      { 'class': 'btn btn-inline', onclick: deleteComment },
+      'delete'
     ) : ''
   )
 ));
@@ -1981,18 +1981,19 @@ var page__extends = Object.assign || function (target) { for (var i = 1; i < arg
       { 'class': 'current-user' },
       h(
         'a',
-        { href: '/login' },
-        'Login'
+        { 'class': 'btn btn-inline', href: '/login' },
+        'login'
       )
     );
   } else {
     return h(
       'div',
       { 'class': 'current-user' },
+      me.name,
       h(
         'a',
-        { href: '/logout' },
-        me.name
+        { 'class': 'btn btn-inline', href: '/logout' },
+        'logout'
       )
     );
   }
@@ -2028,9 +2029,11 @@ const init = _hyper => {
 const metaActions = {
   createPost: ({ title, description }) => {
     const postId = title.replace(/\W/g, '-').toLowerCase();
-    store_room.dispatch({ type: constants["CREATE"], title, postId, description });
-    store_room.dispatch({ type: constants["VOTE"], postId });
-    router_goto(`/posts/${postId}`);
+    if (postId.length > 3) {
+      store_room.dispatch({ type: constants["CREATE"], title, postId, description });
+      store_room.dispatch({ type: constants["VOTE"], postId });
+      router_goto(`/posts/${postId}`);
+    }
   },
 
   deleteComment: (postId, index) => {

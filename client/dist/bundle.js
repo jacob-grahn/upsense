@@ -69,10 +69,11 @@
 
 module.exports = {
   // actions
+  COMMENT: 'COMMENT',
   CREATE: 'CREATE',
+  DELETE: 'DELETE',
   UPDATE: 'UPDATE',
   VOTE: 'VOTE',
-  COMMENT: 'COMMENT',
 
   // sort
   TRENDING: 'TRENDING',
@@ -1426,68 +1427,14 @@ var reducer_default = /*#__PURE__*/__webpack_require__.n(shared_reducer);
 
 
 
-const store_store = createClientStore({ url: 'ws:\\localhost:3000', reducer: reducer_default.a });
+const url = 'ws:\\localhost:3000';
+const store_store = createClientStore({ url, reducer: reducer_default.a });
 const store_room = store_store.createRoom('test');
 
-// EXTERNAL MODULE: ../shared/constants.js
-var constants = __webpack_require__(0);
-var constants_default = /*#__PURE__*/__webpack_require__.n(constants);
-
-// CONCATENATED MODULE: ./src/utils/is-logged-in.js
-const isLoggedIn = me => {
-  return me && me.provider;
-};
-// CONCATENATED MODULE: ./src/utils/router.js
-let hyper;
-
-const router_goto = path => {
-  window.history.pushState(undefined, `UpSense ${path}`, path);
-  if (hyper) {
-    hyper.setPath(path);
-  }
-};
-
-const init = _hyper => {
-  hyper = _hyper;
-  hyper.setPath(window.location.pathname || '/');
-  window.onpopstate = e => {
-    const path = e.pathname || window.location.pathname || '/';
-    hyper.setPath(path);
-  };
-};
-// CONCATENATED MODULE: ./src/actions/index.js
-
-
-
-
-
+// CONCATENATED MODULE: ./src/actions.js
 const actions_actions = {
-  createPost: ({ title, description }) => state => {
-    const postId = title.replace(/\W/g, '-').toLowerCase();
-    store_room.dispatch({ type: constants["CREATE"], title, postId, description });
-    store_room.dispatch({ type: constants["VOTE"], postId });
-    router_goto('/');
-  },
-
-  updatePost: ({ postId, title, description, status }) => state => {
-    store_room.dispatch({ type: constants["UPDATE"], postId, title, description, status });
-    router_goto('/');
-  },
-
-  vote: postId => state => {
-    if (!isLoggedIn(state.me)) return router_goto('/login');
-    setTimeout(() => {
-      store_room.dispatch({ type: constants["VOTE"], postId });
-    });
-  },
-
-  addComment: ({ postId, text }) => state => {
-    if (!isLoggedIn(state.me)) return router_goto('/login');
-    store_room.dispatch({ type: constants["COMMENT"], postId, text });
-  },
-
   updateData: serverState => state => {
-    const roomState = serverState.rooms['test'].confirmed; // todo: set roomName variable
+    const roomState = serverState.rooms['test'].optimistic; // todo: set roomName variable
     return Object.assign({}, state, { me: serverState.me }, { posts: roomState });
   },
 
@@ -1495,10 +1442,6 @@ const actions_actions = {
 
   setPath: path => state => {
     return Object.assign({}, state, { path });
-  },
-
-  goto: path => () => {
-    router_goto(path);
   }
 };
 
@@ -1552,6 +1495,10 @@ const actions_actions = {
     'Create Post'
   )
 ));
+// EXTERNAL MODULE: ../shared/constants.js
+var constants = __webpack_require__(0);
+var constants_default = /*#__PURE__*/__webpack_require__.n(constants);
+
 // CONCATENATED MODULE: ./src/components/post.js
  // eslint-disable-line no-unused-vars
 
@@ -1829,6 +1776,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     'Update Post'
   )
 ));
+// CONCATENATED MODULE: ./src/utils/is-logged-in.js
+const isLoggedIn = me => {
+  return me && me.provider;
+};
 // CONCATENATED MODULE: ./src/components/controls.js
  // eslint-disable-line no-unused-vars
 
@@ -1999,25 +1950,80 @@ var page__extends = Object.assign || function (target) { for (var i = 1; i < arg
     );
   }
 });
-// CONCATENATED MODULE: ./src/components/view.js
+// CONCATENATED MODULE: ./src/utils/router.js
+let hyper;
+
+const router_goto = path => {
+  window.history.pushState(undefined, `UpSense ${path}`, path);
+  if (hyper) {
+    hyper.setPath(path);
+  }
+};
+
+const init = _hyper => {
+  hyper = _hyper;
+  hyper.setPath(window.location.pathname || '/');
+  window.onpopstate = e => {
+    const path = e.pathname || window.location.pathname || '/';
+    hyper.setPath(path);
+  };
+};
+// CONCATENATED MODULE: ./src/meta-actions.js
+// these actions don't directly modify the state, but
+// they call functions in actions/index.js which do modify the state
+
+
+
+
+
+
+const metaActions = {
+  createPost: ({ title, description }) => {
+    const postId = title.replace(/\W/g, '-').toLowerCase();
+    store_room.dispatch({ type: constants["CREATE"], title, postId, description });
+    store_room.dispatch({ type: constants["VOTE"], postId });
+    router_goto('/');
+  },
+
+  updatePost: ({ postId, title, description, status }) => {
+    store_room.dispatch({ type: constants["UPDATE"], postId, title, description, status });
+    router_goto('/');
+  },
+
+  vote: postId => {
+    const state = store_store.getState();
+    if (!isLoggedIn(state.me)) return router_goto('/login');
+    store_room.dispatch({ type: constants["VOTE"], postId });
+  },
+
+  addComment: ({ postId, text }) => {
+    const state = store_store.getState();
+    if (!isLoggedIn(state.me)) return router_goto('/login');
+    store_room.dispatch({ type: constants["COMMENT"], postId, text });
+  },
+
+  goto: router_goto
+};
+// CONCATENATED MODULE: ./src/view.js
  // eslint-disable-line no-unused-vars
 
 
 
-/* harmony default export */ var view = (state => actions => h(
-  'div',
-  { 'class': 'container' },
-  h(
-    'h1',
-    null,
-    'UpSense'
-  ),
-  h(current_user, { me: state.me }),
-  h(page, { state: state, actions: actions })
-));
-// CONCATENATED MODULE: ./src/components/index.js
 
-/* harmony default export */ var components = (view);
+/* harmony default export */ var view = (state => actions => {
+  const allActions = Object.assign({}, actions, metaActions);
+  return h(
+    'div',
+    { 'class': 'container' },
+    h(
+      'h1',
+      null,
+      'UpSense'
+    ),
+    h(current_user, { me: state.me }),
+    h(page, { state: state, actions: allActions })
+  );
+});
 // CONCATENATED MODULE: ./src/index.js
 
 
@@ -2033,7 +2039,7 @@ const src_state = {
   path: '/'
 };
 
-const src_hyper = app({ state: src_state, actions: actions_actions, view: components });
+const src_hyper = app({ state: src_state, actions: actions_actions, view: view });
 init(src_hyper);
 
 store_store.subscribe(src_hyper.updateData);

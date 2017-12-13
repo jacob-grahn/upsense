@@ -1,9 +1,10 @@
 module.exports = {
   // actions
+  COMMENT: 'COMMENT',
   CREATE: 'CREATE',
+  DELETE: 'DELETE',
   UPDATE: 'UPDATE',
   VOTE: 'VOTE',
-  COMMENT: 'COMMENT',
 
   // sort
   TRENDING: 'TRENDING',

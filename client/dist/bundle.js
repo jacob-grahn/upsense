@@ -1568,16 +1568,21 @@ var constants_default = /*#__PURE__*/__webpack_require__.n(constants);
 // CONCATENATED MODULE: ./src/utils/sort-posts.js
 
 
-const filterStatus = (arr, status) => {
+const openStatuses = [constants["PLANNED"], constants["IN_PROGRESS"], constants["OPEN"]];
+
+const filterByStatus = (arr, statuses) => {
+  if (!Array.isArray(statuses)) {
+    statuses = [statuses];
+  }
   const posts = arr.filter(post => {
-    return post.status === status;
+    return statuses.indexOf(post.status) !== -1;
   });
-  return sortOnTrending(posts);
+  return posts;
 };
 
 const sortOnTrending = arr => {
   const posts = arr.map(post => {
-    const ageMs = new Date() - post.createdAt;
+    const ageMs = new Date().getTime() - new Date(post.createdAt).getTime();
     const ageDays = ageMs / 1000 / 60 / 60 / 24;
     const trendScore = post.total / ageDays;
     return Object.assign({}, post, { trendScore });
@@ -1601,14 +1606,14 @@ const sort_posts_sort = (arr, func) => {
 
 // currying sure would be nice here
 const sorts = {
-  [constants["TRENDING"]]: posts => sortOnTrending(posts),
-  [constants["TOP"]]: posts => sortOn(posts, 'total'),
-  [constants["NEW"]]: posts => sortOn(posts, 'createdAt'),
-  [constants["PLANNED"]]: posts => filterStatus(posts, constants["PLANNED"]),
-  [constants["IN_PROGRESS"]]: posts => filterStatus(posts, constants["IN_PROGRESS"]),
-  [constants["OPEN"]]: posts => filterStatus(posts, constants["OPEN"]),
-  [constants["CLOSED"]]: posts => filterStatus(posts, constants["CLOSED"]),
-  [constants["COMPLETE"]]: posts => filterStatus(posts, constants["COMPLETE"])
+  [constants["TRENDING"]]: posts => sortOnTrending(filterByStatus(posts, openStatuses)),
+  [constants["TOP"]]: posts => sortOn(filterByStatus(posts, openStatuses), 'total'),
+  [constants["NEW"]]: posts => sortOn(filterByStatus(posts, openStatuses), 'createdAt'),
+  [constants["PLANNED"]]: posts => filterByStatus(posts, constants["PLANNED"]),
+  [constants["IN_PROGRESS"]]: posts => filterByStatus(posts, constants["IN_PROGRESS"]),
+  [constants["OPEN"]]: posts => filterByStatus(posts, constants["OPEN"]),
+  [constants["CLOSED"]]: posts => filterByStatus(posts, constants["CLOSED"]),
+  [constants["COMPLETE"]]: posts => filterByStatus(posts, constants["COMPLETE"])
 };
 // CONCATENATED MODULE: ./src/components/post-list.js
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };

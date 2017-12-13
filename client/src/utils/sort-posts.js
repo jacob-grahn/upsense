@@ -9,16 +9,21 @@ import {
   COMPLETE
 } from '../../../shared/constants'
 
-const filterStatus = (arr, status) => {
+const openStatuses = [PLANNED, IN_PROGRESS, OPEN]
+
+const filterByStatus = (arr, statuses) => {
+  if (!Array.isArray(statuses)) {
+    statuses = [statuses]
+  }
   const posts = arr.filter(post => {
-    return post.status === status
+    return statuses.indexOf(post.status) !== -1
   })
-  return sortOnTrending(posts)
+  return posts
 }
 
 const sortOnTrending = (arr) => {
   const posts = arr.map(post => {
-    const ageMs = new Date() - post.createdAt
+    const ageMs = new Date().getTime() - new Date(post.createdAt).getTime()
     const ageDays = ageMs / 1000 / 60 / 60 / 24
     const trendScore = post.total / ageDays
     return Object.assign({}, post, {trendScore})
@@ -42,12 +47,12 @@ const sort = (arr, func) => {
 
 // currying sure would be nice here
 export const sorts = {
-  [TRENDING]: (posts) => sortOnTrending(posts),
-  [TOP]: (posts) => sortOn(posts, 'total'),
-  [NEW]: (posts) => sortOn(posts, 'createdAt'),
-  [PLANNED]: (posts) => filterStatus(posts, PLANNED),
-  [IN_PROGRESS]: (posts) => filterStatus(posts, IN_PROGRESS),
-  [OPEN]: (posts) => filterStatus(posts, OPEN),
-  [CLOSED]: (posts) => filterStatus(posts, CLOSED),
-  [COMPLETE]: (posts) => filterStatus(posts, COMPLETE)
+  [TRENDING]: (posts) => sortOnTrending(filterByStatus(posts, openStatuses)),
+  [TOP]: (posts) => sortOn(filterByStatus(posts, openStatuses), 'total'),
+  [NEW]: (posts) => sortOn(filterByStatus(posts, openStatuses), 'createdAt'),
+  [PLANNED]: (posts) => filterByStatus(posts, PLANNED),
+  [IN_PROGRESS]: (posts) => filterByStatus(posts, IN_PROGRESS),
+  [OPEN]: (posts) => filterByStatus(posts, OPEN),
+  [CLOSED]: (posts) => filterByStatus(posts, CLOSED),
+  [COMPLETE]: (posts) => filterByStatus(posts, COMPLETE)
 }

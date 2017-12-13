@@ -44,6 +44,18 @@ module.exports = function webpackStuff (env) {
         })
       }]
     },
-    plugins
+    plugins,
+    devServer: {
+      proxy: [{
+        path: '/auth/*',
+        target: 'http://localhost:3000'
+      }, {
+        path: '/logout',
+        target: 'http://localhost:3000'
+      }, {
+        path: '/login',
+        target: 'http://localhost:3000'
+      }]
+    }
   }
 }

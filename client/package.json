@@ -4,9 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "dev": "webpack-dev-server",
     "build": "webpack --env production",
-    "test": "standard --verbose && npm run build && echo 'SUCCESS!'",
-    "watch": "webpack && chokidar src/**/* styles/**/* ../shared/**/* -c webpack"
+    "test": "standard --verbose && npm run build && echo 'SUCCESS!'"
   },
   "author": "Jacob Grahn",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "babel-plugin-transform-react-jsx": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2017": "^6.24.1",
-    "chokidar-cli": "^1.2.0",
     "css-loader": "^0.28.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
@@ -29,6 +28,7 @@
     "imports": "^1.0.0",
     "node-libs-browser": "^2.1.0",
     "standard": "^10.0.3",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
   }
 }

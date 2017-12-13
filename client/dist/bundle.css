@@ -1,4 +1,9 @@
 /* elements */
+body {
+  margin-top: 135px;
+  color: #5F6678;
+  font-family: -apple-system-body,BlinkMacSystemFont,SFUI,HelveticaNeue,Helvetica,Arial,sans-serif;
+}
 h1 {
   margin-bottom: 50px;
   color: #2C2F37;
@@ -26,9 +31,6 @@ ul li {
   max-width: 700px;
   margin: 0 auto;
   position: relative;
-  margin-top: 135px;
-  color: #5F6678;
-  font-family: -apple-system-body,BlinkMacSystemFont,SFUI,HelveticaNeue,Helvetica,Arial,sans-serif;
 }
 
 /* buttons */
@@ -81,8 +83,7 @@ ul li {
 .controls {
   height: 42px;
   display: flex;
-  font-size: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 .controls .group {
   margin-left: auto;
@@ -184,27 +185,28 @@ ul li {
 }
 .post .content {
   flex: 1 1 auto;
-  font-size: 15px;
 }
 .post .content:hover {
   cursor: pointer;
 }
 .post .comments {
   flex: 0 0 auto;
-  font-size: 14px;
-}
-.post .comments .comment-count {
-  margin-left: 6px;
   position: relative;
-  top: -9px;
+  top: -1px;
+  margin-left: 8px;
 }
 .post .comments:hover {
   cursor: pointer;
 }
+.post .comments .comment-count {
+  font-size: 14px;
+  margin-left: 4px;
+  position: relative;
+  top: -9px;
+}
 .post .content .title {
   color: #333;
   font-weight: bold;
-  font-size: 16px;
   margin-bottom: 8px;
 }
 

@@ -10,10 +10,10 @@ module.exports = (app) => {
     callbackURL: '/auth/twitter/callback'
   },
   (token, tokenSecret, profile, cb) => {
+    // avatar: profile.photos[0].value
     const account = {
       userId: `twitter:${profile.id}`,
-      name: profile.displayName,
-      avatar: profile.photos[0].value
+      name: profile.displayName
     }
     if (account.userId === ADMIN_USER_ID) {
       account.admin = true

@@ -1,36 +1,30 @@
-/* elements */
-body {
-  margin-top: 135px;
+/* container */
+.upsense {
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 36px;
   color: #5F6678;
   font-family: -apple-system-body,BlinkMacSystemFont,SFUI,HelveticaNeue,Helvetica,Arial,sans-serif;
 }
-h1 {
-  margin-bottom: 50px;
-  color: #2C2F37;
-}
-h2 {
+
+/* elements */
+.upsense h2 {
   font-weight: normal;
   padding: 0;
   margin: 0;
   color: #464B58;
   font-size: 20px;
 }
-ul {
+.upsense ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-ul li {
+.upsense ul li {
   padding: 0;
   margin: 0;
   margin-bottom: 36px;
-}
-
-/* container */
-.container {
-  max-width: 700px;
-  margin: 0 auto;
-  position: relative;
 }
 
 /* buttons */
@@ -244,11 +238,4 @@ ul li {
 }
 .post-inspect .admin-buttons .btn {
   margin-left: 8px;
-}
-
-/* current-user */
-.current-user {
-  position: absolute;
-  top: 10px;
-  right: 0px;
 }

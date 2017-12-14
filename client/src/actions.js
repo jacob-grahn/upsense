@@ -1,6 +1,8 @@
+import env from './env'
+
 const actions = {
   updateData: (serverState) => (state) => {
-    const roomState = serverState.rooms['test'].optimistic // todo: set roomName variable
+    const roomState = serverState.rooms[env.roomId].optimistic
     return Object.assign({}, state, {me: serverState.me}, {posts: roomState})
   },
 

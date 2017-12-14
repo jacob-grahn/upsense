@@ -47,7 +47,7 @@ module.exports = function webpackStuff (env) {
     plugins,
     devServer: {
       proxy: [{
-        path: '/auth/*',
+        path: '/auth/**/*',
         target: 'http://localhost:3000'
       }, {
         path: '/logout',

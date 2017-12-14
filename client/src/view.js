@@ -6,10 +6,9 @@ import { metaActions } from './meta-actions'
 export default (state) => (actions) => {
   const allActions = Object.assign({}, actions, metaActions)
   return (
-    <div class='container'>
-      <h1>UpSense</h1>
-      <CurrentUser me={state.me} />
+    <div class='upsense'>
       <Page state={state} actions={allActions} />
+      <CurrentUser me={state.me} />
     </div>
   )
 }

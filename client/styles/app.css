@@ -9,6 +9,10 @@
   box-sizing: content-box;
 }
 
+.upsense * {
+  box-sizing: content-box;
+}
+
 /* elements */
 .upsense h2 {
   font-weight: normal;

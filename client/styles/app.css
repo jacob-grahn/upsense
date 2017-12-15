@@ -27,6 +27,15 @@
   margin-bottom: 36px;
 }
 
+/* current-user */
+.current-user {
+  text-align: right;
+  margin-bottom: 24px;
+}
+.current-user .btn-inline {
+  margin-right: 0;
+}
+
 /* buttons */
 .btn {
   cursor: pointer;

@@ -1,7 +1,9 @@
+import env from '../env'
+
 let hyper
 
 export const goto = (path) => {
-  window.history.pushState(undefined, `UpSense ${path}`, path)
+  window.history.pushState(undefined, path, `${env.baseUrl}${path}`)
   if (hyper) {
     hyper.setPath(path)
   }

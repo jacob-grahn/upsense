@@ -55,6 +55,10 @@ module.exports = function webpackStuff (env) {
       }, {
         path: '/login',
         target: 'http://localhost:3000'
+      }, {
+        path: '/ws',
+        target: 'http://localhost:3000',
+        ws: true
       }]
     }
   }

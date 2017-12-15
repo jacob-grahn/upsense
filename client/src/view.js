@@ -7,8 +7,8 @@ export default (state) => (actions) => {
   const allActions = Object.assign({}, actions, metaActions)
   return (
     <div class='upsense'>
-      <Page state={state} actions={allActions} />
       <CurrentUser me={state.me} />
+      <Page state={state} actions={allActions} />
     </div>
   )
 }

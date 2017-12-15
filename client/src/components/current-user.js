@@ -2,11 +2,11 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import isLoggedIn from '../../../shared/is-logged-in'
 import env from '../env'
 
-export default ({ me }) => {
+export default ({ me, goto }) => {
   if (!isLoggedIn(me)) {
     return (
       <div class='current-user'>
-        <a class='btn btn-inline' href='/login'>login</a>
+        <span class='btn btn-inline' onclick={() => goto('/login')}>login</span>
       </div>
     )
   } else {

@@ -16,5 +16,7 @@ module.exports = {
   PG_HOST: env.PG_HOST || 'localhost',
   PG_DB: env.PG_DB || 'upsense',
   PG_PASSWORD: env.PG_PASSWORD || 'aaa',
-  PG_PORT: env.PG_PORT || 5432
+  PG_PORT: env.PG_PORT || 5432,
+
+  WIDGET_HOST: env.WIDGET_HOST || '/'
 }

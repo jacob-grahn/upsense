@@ -1,7 +1,12 @@
 const TwitterStrategy = require('passport-twitter')
 const passport = require('koa-passport')
 const route = require('koa-route')
-const { ADMIN_USER_ID, TWITTER_KEY, TWITTER_SECRET } = require('./env')
+const {
+  ADMIN_USER_ID,
+  TWITTER_KEY,
+  TWITTER_SECRET,
+  WIDGET_HOST
+} = require('./env')
 
 module.exports = (app) => {
   const twitter = new TwitterStrategy({
@@ -29,8 +34,8 @@ module.exports = (app) => {
 
   app.use(route.get('/auth/twitter/callback',
     passport.authenticate('twitter', {
-      failureRedirect: '/',
-      successRedirect: '/'
+      failureRedirect: WIDGET_HOST,
+      successRedirect: WIDGET_HOST
     })
   ))
 }

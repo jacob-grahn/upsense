@@ -2,7 +2,7 @@ import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import { OPEN } from '../../../shared/constants'
 
 export default (post) => (
-  <div class='post'>
+  <div class='sm-post'>
     <div class='vote' onclick={() => post.vote(post.postId)}>
       <div class='arrow-up' />
       {post.total}

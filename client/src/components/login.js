@@ -1,9 +1,10 @@
 import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
+import env from '../env'
 
 export default () => (
   <div class='login'>
     <h2>Click a Site to Login</h2>
-    <a href='/auth/twitter'>
+    <a href={`${env.host}/auth/twitter`}>
       <svg id='Logo_FIXED' data-name='Logo — FIXED' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'>
         <defs>
           <style>{'.cls-1{fill:none;}.cls-2{fill:#1da1f2;}'}</style>

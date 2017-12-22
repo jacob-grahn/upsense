@@ -1,5 +1,6 @@
 import { h } from 'hyperapp' // eslint-disable-line no-unused-vars
 import Comment from './comment'
+import Vote from './vote'
 import isAdmin from '../../../shared/is-admin'
 
 export default ({ me, post, goto, vote, addComment, deleteComment, deletePost, editPost }) => {
@@ -21,10 +22,7 @@ export default ({ me, post, goto, vote, addComment, deleteComment, deletePost, e
       <button class='btn btn-text' onclick={() => goto('/')}>Back to All Posts</button>
       {adminButtons()}
       <div class='top'>
-        <div class='vote' onclick={() => vote(post.postId)}>
-          <div class='arrow-up' />
-          {post.total}
-        </div>
+        <Vote vote={vote} me={me} {...post} />
         <div class='title'>{post.title}</div>
       </div>
 

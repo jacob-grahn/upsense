@@ -179,6 +179,9 @@
 .vote:hover .arrow-up {
   border-bottom: 9px solid #94C595;
 }
+.vote .arrow-up.arrow-highlighted {
+  border-bottom: 9px solid #94C595;
+}
 
 /* post */
 .sm-post {

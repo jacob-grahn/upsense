@@ -27,7 +27,7 @@ export default ({ state, actions }) => {
   return (
     <div>
       <Controls me={state.me} {...actions} />
-      <PostList sort={state.sort} posts={state.posts} {...actions} />
+      <PostList sort={state.sort} posts={state.posts} me={state.me} {...actions} />
     </div>
   )
 }

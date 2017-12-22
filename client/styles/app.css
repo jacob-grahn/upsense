@@ -217,7 +217,7 @@
   margin-bottom: 8px;
 }
 .sm-post .content .description {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 /* post-inspect */
@@ -258,5 +258,5 @@
   color: #6C906D;
 }
 .post-inspect .comment .text {
-  white-space: pre;
+  white-space: pre-wrap;
 }

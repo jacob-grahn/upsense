@@ -216,6 +216,9 @@
   font-weight: bold;
   margin-bottom: 8px;
 }
+.sm-post .content .description {
+  white-space: pre;
+}
 
 /* post-inspect */
 .post-inspect .btn {
@@ -234,13 +237,6 @@
   margin: auto 0;
   flex: 1 1 auto;
 }
-.post-inspect .comment {
-  margin-left: 52px;
-  padding-bottom: 16px;
-}
-.post-inspect .comment .name {
-  color: #6C906D;
-}
 .post-inspect input {
   margin-left: 52px;
   padding: 10px;
@@ -251,4 +247,16 @@
 }
 .post-inspect .admin-buttons .btn {
   margin-left: 8px;
+}
+
+/* comment */
+.post-inspect .comment {
+  margin-left: 52px;
+  padding-bottom: 16px;
+}
+.post-inspect .comment .name {
+  color: #6C906D;
+}
+.post-inspect .comment .text {
+  white-space: pre;
 }

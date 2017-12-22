@@ -24,8 +24,8 @@ const filterByStatus = (arr, statuses) => {
 const sortOnTrending = (arr) => {
   const posts = arr.map(post => {
     const ageMs = new Date().getTime() - new Date(post.createdAt).getTime()
-    const ageMonths = ageMs / 1000 / 60 / 60 / 24 / 30
-    const trendScore = post.total / ageMonths
+    const ageWeeks = ageMs / 1000 / 60 / 60 / 24 / 7
+    const trendScore = post.total - ageWeeks
     return Object.assign({}, post, {trendScore})
   })
   return sortOn(posts, 'trendScore')
